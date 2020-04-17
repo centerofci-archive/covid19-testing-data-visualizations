@@ -1,5 +1,6 @@
 <script>
   export let methods
+  export let missingMethods
   export let activeSteps
 
 	import { steps, ordinalLevels } from "./data-utils"
@@ -25,6 +26,11 @@
             </div>
           </div>
         {/each}
+        {#each missingMethods[i] || [] as name}
+          <div class="step-option step-option-temp" class:active={activeSteps && activeSteps[i].includes(name.toLowerCase())}>
+            { name }
+          </div>
+        {/each}
       </div>
     </div>
   {/each}
@@ -34,7 +40,6 @@
   .c {
     display: flex;
     justify-content: center;
-    padding: 2em;
     text-align: center;
   }
   .step-index {
@@ -43,7 +48,7 @@
     justify-content: center;
     height: 1.7em;
     width: 1.7em;
-    margin-bottom: 0.6em;
+    margin-bottom: 0.3em;
     line-height: 1em;
     border: 1px solid;
     border-radius: 100%;
@@ -77,6 +82,12 @@
     font-weight: 600;
     border: 2px solid transparent;
     transition: all 0.2s ease-out;
+  }
+  .step-option-temp {
+    margin-bottom: 0.1em;
+    font-size: 0.9em;
+    background: none;
+    border: 1px dashed rgb(186, 182, 196);
   }
   .step-option.active {
     border-color: #3A3253;

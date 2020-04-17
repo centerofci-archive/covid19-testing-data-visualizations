@@ -3,11 +3,13 @@
 	import { csv } from "d3-fetch"
 
 	import { testUrl, methodsUrl, steps, parseStep, ordinalLevels, parseDate, formatDate } from "./data-utils"
+	import { flatten } from "./utils"
 	import Steps from "./steps.svelte"
 
 
 	let tests = []
 	let methods = []
+	let missingMethods = []
 	let activeTest = null
 
 	const getLevel = str => {
@@ -63,13 +65,25 @@
 	const updateMethods = () => {
 		if (!tests.length || !methods.length) return
 
+		missingMethods = steps.map((step, i) => ([
+			...new Set(
+				flatten(
+					tests.map(({ steps }) => steps[i])
+				)
+			)
+		].filter(d => (
+			!methods.filter(({ stepIndex }) => (
+				stepIndex == i
+			)).map(d => d.name.toLowerCase()).includes(d)
+		))))
+		console.log(missingMethods)
+
 		methods = methods.map(method => ({
 			...method,
 			numTimesUsed: tests.filter(({ steps }) => (
 				steps[method.stepIndex].includes(method.name.toLowerCase())
 			)).length,
 		}))
-		console.log(methods)
 	}
 
 	$: tests, methods, updateMethods()
@@ -78,20 +92,17 @@
 </script>
 
 <main>
-	<div class="tests">
-		{#each tests as test}
-			<div
-				class="test"
-				class:active={activeTest == test}
-				on:mouseenter={() => activeTest = test}>
-				{ test.name }
-			</div>
-		{/each}
-	</div>
-
-	<div class="steps">
-		<Steps {methods} {activeSteps} />
-
+	<div class="list">
+		<div class="tests">
+			{#each tests as test}
+				<div
+					class="test"
+					class:active={activeTest == test}
+					on:mouseenter={() => activeTest = test}>
+					{ test.name }
+				</div>
+			{/each}
+		</div>
 		{#if activeTest}
 			<div class="test-info">
 				<h3>
@@ -128,6 +139,10 @@
 		{/if}
 	</div>
 
+	<div class="steps">
+		<Steps {methods} {missingMethods} {activeSteps} />
+	</div>
+
 </main>
 
 <style>
@@ -146,15 +161,29 @@
 
 	main {
 		display: flex;
+		align-items: flex-start;
+		margin-bottom: 6px;
+		/* height: 100%; */
+		/* overflow: hidden; */
 	}
 
-	.tests {
+	.list {
 		flex: 0 0 20em;
+		height: 100vh;
+		display: flex;
+		width: 20em;
+		flex-direction: column;
+	}
+	.tests {
+		flex: 1;
 		padding: 1em;
+		padding-bottom: 3em;
+		overflow: auto;
 	}
 
 	.test {
-		padding: 0.6em 1em;
+		padding: 0.6em 1.6em;
+		font-size: 0.9em;
 		cursor: pointer;
 	}
 	.test:hover {
@@ -165,19 +194,25 @@
 	}
 	.steps {
 		flex: 1;
-		position: sticky;
-		top: 3em;
+		/* position: sticky; */
+		/* top: 0; */
     align-self: flex-start;
+		padding: 0 3em;
 	}
 	.test-info {
-		max-width: 37em;
-		min-height: 20em;
-		padding: 1em 2.7em;
+		margin-bottom: 1px;
+		width: 100%;
+		height: 30em;
+		padding: 0.6rem 1.6rem;
+		font-size: 0.8em;
 		background: #3A3253;
 		color: #E1DCE4;
 	}
 	.test-info .date {
 		margin-bottom: 0.6em;
+	}
+	:global(body) {
+		padding: 0;
 	}
 	.test-info :global(h3) {
 		display: flex;

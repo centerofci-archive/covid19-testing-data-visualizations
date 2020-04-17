@@ -21,7 +21,11 @@ export const ordinalLevels = ["low", "medium", "high"]
 
 export const parseStep = (str, index) => {
   const lowerString = str.toLowerCase()
-  const parts = lowerString.split(/(?:and|,)+/g).map(d => d.trim())
+  const parts = lowerString
+    .split(" (")[0]
+    .split("?")[0]
+    .split(/(?:and|or|,)+/g)
+    .map(d => d.trim())
     .map(part => {
       if (index == 0) {
         if (str.includes("nasopharyngeal")) return "nasopharyngeal swab"
@@ -34,6 +38,8 @@ export const parseStep = (str, index) => {
       return part
     })
   return [...new Set(parts)]
+    .filter(d => d.trim().length > 0)
+    .filter(d => !d.startsWith("but"))
 }
 
 export const parseDate = timeParse("%m/%d/%Y")
