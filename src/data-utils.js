@@ -19,6 +19,17 @@ export const steps = [
 ]
 export const ordinalLevels = ["low", "medium", "high"]
 
+export const getOrdinalLevel = str => {
+  const index = ordinalLevels.indexOf(str)
+  return index == -1 ? null : index + 1
+}
+
+const nasopharyngealKeywords = [
+  "nasopharyngeal",
+  "nasal",
+  "combined nasal",
+  "throat",
+]
 export const parseStep = (str, index) => {
   const lowerString = str.toLowerCase()
   const parts = lowerString
@@ -28,7 +39,7 @@ export const parseStep = (str, index) => {
     .map(d => d.trim())
     .map(part => {
       if (index == 0) {
-        if (part.includes("nasopharyngeal")) return "nasopharyngeal swab"
+        if (nasopharyngealKeywords.filter(d => part.includes(d)).length) return "nasopharyngeal swab"
       } else if (index == 1) {
         if (part.includes("extraction")) return "rna extraction"
         if (part.includes("purification")) return "rna purification"
@@ -45,3 +56,56 @@ export const parseStep = (str, index) => {
 
 export const parseDate = timeParse("%m/%d/%Y")
 export const formatDate = timeFormat("%B %-d, %Y")
+
+const minuteInTimeInterval = {
+  mins: 1,
+  min: 1,
+  minutes: 1,
+  minute: 1,
+  hours: 60,
+  hour: 60,
+  day: 60 * 24,
+  days: 60 * 24,
+}
+const sum = (arr=[]) => arr.reduce((a,b) => +a + +b, [])
+const timeIntervals = Object.keys(minuteInTimeInterval)
+export const parseTime = str => {
+  if (!str) return []
+  if (str == "?") return [null, null, "no information available"]
+  const parts = str.replace(/>|</g, "").split(/\s|,|(-)/g).filter(d => d)
+  let runningMinutes = [0]
+  let numbers = []
+  let isTo = false
+  parts.forEach(part => {
+    const isNumber = !part.replace(/\d|\./g, "").length
+    if (isNumber) {
+      numbers = isTo ? [...numbers, [+part]] : [
+        ...numbers.slice(0, -1),
+        [...(numbers[numbers.length - 1] || []), +part]
+      ]
+    } else if (part == "-") {
+      isTo = true
+    } else if (timeIntervals.includes(part)) {
+      runningMinutes = isTo ? numbers.map((number, i) => (
+        +(runningMinutes[i] || 0) + +sum(number.map(d => d * minuteInTimeInterval[part]))
+      )) : [
+        +(runningMinutes[0] || 0) + +sum((numbers[0] || [3]).map(d => d * minuteInTimeInterval[part]))
+      ]
+      numbers = []
+      isTo = false
+    }
+  })
+  if (!runningMinutes[1]) runningMinutes[1] = runningMinutes[0]
+  return [
+    ...runningMinutes,
+    str,
+  ]
+}
+
+export const parseLocation = str => {
+  const lowerString = (str || "").toLowerCase()
+  const parts = lowerString.split(/\(|\)|,/g)
+  return lowerString.includes("centralized") ? ["centralized", parts[1]] :
+    lowerString.includes("poc") ? ["poc", parts[1]] :
+    [null, lowerString]
+}

@@ -2,22 +2,22 @@
 	import { onMount } from 'svelte'
 	import { csv } from "d3-fetch"
 
-	import { testUrl, methodsUrl, steps, parseStep, ordinalLevels, parseDate, formatDate } from "./data-utils"
-	import { flatten } from "./utils"
-	import Steps from "./steps.svelte"
-
+	import { testUrl, methodsUrl, steps, parseStep, parseTime, getOrdinalLevel, ordinalLevels, parseLocation,parseDate, formatDate } from "./data-utils"
+	import { flatten, getUrlParams } from "./utils"
+	import Steps from "./Steps.svelte"
+	import Timeline from "./Timeline.svelte"
+	import TestsTable from "./TestsTable.svelte"
 
 	let tests = []
 	let methods = []
+	let sections = ["steps"]
 	let missingMethods = []
 	let activeTest = null
 
-	const getLevel = str => {
-		const index = ordinalLevels.indexOf(str)
-		return index == -1 ? null : index
-	}
-
 	onMount(() => {
+		const urlParams = getUrlParams()
+		sections = urlParams["section"] ? urlParams["section"].split(",") : ["steps"]
+
 		csv(testUrl)
 			.then(res => {
 				const parsedData = res.map(d => ({
@@ -25,9 +25,9 @@
 					name: d["Test Name"],
 					date: d["Date of EUA"],
 					summary: d["Diagnostic Summary"],
-					time: d["Time (Estimated)"],
-					cost: getLevel(d["Cost (high, medium or low)"]),
-					location: d["Centralized/POC"],
+					time: parseTime(d["Time (Estimated)"]),
+					cost: getOrdinalLevel(d["Cost (high, medium or low)"]),
+					location: parseLocation(d["Centralized/POC"]),
 					approvals: d["Approvals"],
 					training: d["Training Requirements"],
 					notes: d["Notes"],
@@ -37,7 +37,7 @@
 					unparsedSteps: steps.map((stepName, i) => (
 						d[stepName]
 					)),
-				}))
+				})).sort((a,b) => parseDate(b.date) - parseDate(a.date))
 				tests = parsedData
 				console.log(res, tests)
 			})
@@ -47,9 +47,9 @@
 					// ...d,
 					name: d["Feature Name"],
 					stepIndex: steps.indexOf(d["Step"]),
-					time: d["Time"],
-					cost: getLevel(d["Cost"]),
-					sensitivity: getLevel(d["Sensitivity"]),
+					time: parseTime(d["Time"]),
+					cost: getOrdinalLevel(d["Cost"]),
+					sensitivity: getOrdinalLevel(d["Sensitivity"]),
 					location: d["Centralized/POC"] == "-" ? null : d["Centralized/POC"],
 					approvals: d["Approvals"],
 					training: d["Training Requirements"] == "no",
@@ -76,7 +76,6 @@
 				stepIndex == i
 			)).map(d => d.name.toLowerCase()).includes(d)
 		))))
-		console.log(missingMethods)
 
 		methods = methods.map(method => ({
 			...method,
@@ -92,56 +91,68 @@
 </script>
 
 <main>
-	<div class="list">
-		<div class="tests">
-			{#each tests as test}
-				<div
-					class="test"
-					class:active={activeTest == test}
-					on:mouseenter={() => activeTest = test}>
-					{ test.name }
-				</div>
-			{/each}
-		</div>
-		{#if activeTest}
-			<div class="test-info">
-				<h3>
-					{ activeTest.name }
-					<div class="infos">
-						<div class="info">
-							{#if activeTest.cost}
-								{#each new Array(activeTest.cost || 0).fill(0) as _}
-									$
-								{/each}
-							{/if}
-						</div>
-					</div>
-				</h3>
-				{#if activeTest.date}
-					<div class="date">{ formatDate(parseDate(activeTest.date)) }</div>
-				{/if}
-				<p>
-					{ activeTest.summary }
-				</p>
-				<h6>Notes</h6>
-				<p>
-					{ activeTest.notes }
-				</p>
-				<h6>Steps</h6>
-				<p>
-					{ activeTest.unparsedSteps.join(", ") }
-				</p>
-				<h6>Time</h6>
-				<p>
-					{ activeTest.time }
-				</p>
-			</div>
-		{/if}
-	</div>
+	{#if sections.includes("timeline")}
+		<Timeline data={tests} />
+	{/if}
 
-	<div class="steps">
-		<Steps {methods} {missingMethods} {activeSteps} />
-	</div>
+	{#if sections.includes("table")}
+		<TestsTable data={tests} />
+	{/if}
+
+	{#if sections.includes("steps")}
+		<div class="test-list">
+			<div class="list">
+				<div class="tests">
+					{#each tests as test}
+						<div
+							class="test"
+							class:active={activeTest == test}
+							on:mouseenter={() => activeTest = test}>
+							{ test.name }
+						</div>
+					{/each}
+				</div>
+				{#if activeTest}
+					<div class="test-info">
+						<h3>
+							{ activeTest.name }
+							<div class="infos">
+								<div class="info">
+									{#if activeTest.cost}
+										{#each new Array(activeTest.cost || 0).fill(0) as _}
+											$
+										{/each}
+									{/if}
+								</div>
+							</div>
+						</h3>
+						{#if activeTest.date}
+							<div class="date">{ formatDate(parseDate(activeTest.date)) }</div>
+						{/if}
+						<p>
+							{ activeTest.summary }
+						</p>
+						<h6>Notes</h6>
+						<p>
+							{ activeTest.notes }
+						</p>
+						<h6>Steps</h6>
+						<p>
+							{ activeTest.unparsedSteps.join(", ") }
+						</p>
+						<h6>Time</h6>
+						<p>
+							{ activeTest.time }
+						</p>
+					</div>
+				{/if}
+			</div>
+
+			<div class="steps">
+				<Steps {methods} {missingMethods} {activeSteps} />
+			</div>
+		</div>
+	{/if}
 
 </main>
 
@@ -159,7 +170,7 @@
 		letter-spacing: 0.1em;
 	}
 
-	main {
+	.test-list {
 		display: flex;
 		align-items: flex-start;
 		margin-bottom: 6px;

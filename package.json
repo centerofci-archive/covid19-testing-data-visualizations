@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "scripts": {
     "build": "rollup -c",
-    "dev": "rollup -c -w",
+    "dev:rollup": "rollup -c -w",
+    "dev:livereload": "cross-env LIVERELOAD=1 rollup -c -w",
+    "dev:nollup": "cross-env NOLLUP=1 nollup -c --hot --port 5000 --content-base ./public",
+    "dev": "npm run dev:rollup",
     "start": "sirv public"
   },
   "devDependencies": {
@@ -16,10 +19,17 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
+    "cross-env": "^7.0.2",
+    "d3-array": "^2.4.0",
     "d3-fetch": "^1.1.2",
+    "d3-scale": "^3.2.1",
+    "d3-time": "^1.1.0",
     "d3-time-format": "^2.2.3",
     "lodash-es": "^4.17.15",
     "node-sass": "^4.13.1",
+    "nollup": "^0.10.7",
+    "rollup-plugin-hot": "^0.0.16",
+    "rollup-plugin-svelte-hot": "^0.5.0",
     "sirv-cli": "^0.4.4"
   }
 }
