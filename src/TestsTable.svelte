@@ -11,7 +11,7 @@
   export let data = []
   $: console.table(data[0])
 
-  let sortMetric = "date"
+  let sortMetric = "time"
   let isSortReversed = false
 
   const formatDate = timeFormat("%b %d")
