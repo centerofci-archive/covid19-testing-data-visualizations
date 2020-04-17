@@ -24,16 +24,17 @@ export const parseStep = (str, index) => {
   const parts = lowerString
     .split(" (")[0]
     .split("?")[0]
-    .split(/(?:and|or|,)+/g)
+    .split(/(?: and | or |,)+/g)
     .map(d => d.trim())
     .map(part => {
       if (index == 0) {
-        if (str.includes("nasopharyngeal")) return "nasopharyngeal swab"
+        if (part.includes("nasopharyngeal")) return "nasopharyngeal swab"
       } else if (index == 1) {
-        if (str.includes("extraction")) return "rna extraction"
-        if (str.includes("purification")) return "rna purification"
+        if (part.includes("extraction")) return "rna extraction"
+        if (part.includes("purification")) return "rna purification"
       } else if (index == 2) {
-        if (str.includes("rt-pcr")) return "rt-pcr"
+        if (part.includes("rt-pcr")) return "rt-pcr"
+        if (part.includes("isothermal")) return "isothermal amplification"
       }
       return part
     })

@@ -129,7 +129,7 @@
 				</p>
 				<h6>Steps</h6>
 				<p>
-					{ activeTest.steps.join(", ") }
+					{ activeTest.unparsedSteps.join(", ") }
 				</p>
 				<h6>Time</h6>
 				<p>
