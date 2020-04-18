@@ -7,6 +7,7 @@
 	import Steps from "./Steps.svelte"
 	import Timeline from "./Timeline.svelte"
 	import TestsTable from "./TestsTable.svelte"
+	import Clusters from "./Clusters.svelte"
 
 	let tests = []
 	let methods = []
@@ -99,6 +100,10 @@
 		<TestsTable data={tests} />
 	{/if}
 
+	{#if sections.includes("clusters")}
+		<Clusters data={tests} />
+	{/if}
+
 	{#if sections.includes("steps")}
 		<div class="test-list">
 			<div class="list">
@@ -159,6 +164,9 @@
 <style>
 	@import url('https://rsms.me/inter/inter.css');
 
+	:global(*) {
+		box-sizing: border-box;
+	}
 	:global(body) {
 		color: #3A3253;
 		font-family: 'Inter', sans-serif;

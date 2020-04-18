@@ -1,8 +1,8 @@
 <script>
 	import { flip } from "svelte/animate"
+  import { extent } from "d3-array"
 	import { timeFormat } from "d3-time-format"
   import { scaleLinear } from "d3-scale"
-  import { extent } from "d3-array"
 
 	import { parseDate } from "./data-utils"
 	import { getOrdinal } from "./utils"
@@ -18,18 +18,20 @@
   const formatDay = timeFormat("%-d")
 
   const getMetric = (d, metric) => (
-    metric == "date" ? parseDate(d.date) :
+    metric == "date" ? -parseDate(d.date) :
     metric == "cost" ? d.cost :
-    metric == "time" ? -d.time[0] || (isSortReversed ? Infinity : -Infinity) :
+    metric == "time" ? d.time[0] ? (
+        (d.time[1] - d.time[0]) / 2 + d.time[0]
+      ) : (isSortReversed ? -Infinity : Infinity) :
     metric == "location" ? (
-      d.location[0] == "poc" ? 100 :
-      d.location[0] == "centralized" ? 50 :
-        (isSortReversed ? 100 : -100)
+      d.location[0] == "centralized" ? 100 :
+      d.location[0] == "poc" ? 50 :
+        (isSortReversed ? -100 : 100)
      ) :
       (isSortReversed ? 100 : -100)
   )
   $: sortedData = data.sort((a,b) => (
-    (getMetric(a, sortMetric) > getMetric(b, sortMetric) ? -1 : 1) * (isSortReversed ? -1 : 1)
+    (getMetric(a, sortMetric) > getMetric(b, sortMetric) ? 1 : -1) * (isSortReversed ? -1 : 1)
   ))
 
   const sortBy = metric => {
@@ -40,37 +42,52 @@
   $: colorScale = scaleLinear()
     .domain(extent(data, d => d.time[1] || 0))
     .range(["#D9D8E1", "#fff"])
+
+  const xAccessor = d => d.time[0]
+  const x1Accessor = d => d.time[1]
+  $: xScale = scaleLinear()
+    .domain(extent([
+      ...data.map(xAccessor),
+      ...data.map(x1Accessor),
+    ]))
+    .range([0, 100])
+
+  $: xTicks = xScale.ticks(3)
+    .map(d => ([
+      d,
+      xScale(d),
+    ]))
 </script>
 
 <div class="c">
   <div class="headers">
-    <div class="col">Test name</div>
+    <div class="col title">Test name</div>
     <div class="col">Methods</div>
     <div class="col sym clickable" on:click={() => sortBy("cost")}>
       <div>
         {#if sortMetric == "cost"}
           <span class="sort-icon">
-            <Icon name="arrow" direction={isSortReversed ? "n" : "s"} />
+            <Icon name="arrow" direction={isSortReversed ? "s" : "n"} />
           </span>
         {/if}
         Cost
       </div>
     </div>
-    <div class="col text clickable" on:click={() => sortBy("time")}>
+    <!-- <div class="col text clickable" on:click={() => sortBy("time")}>
       <div>
         {#if sortMetric == "time"}
           <span class="sort-icon">
-            <Icon name="arrow" direction={isSortReversed ? "n" : "s"} />
+            <Icon name="arrow" direction={isSortReversed ? "s" : "n"} />
           </span>
         {/if}
         Time
       </div>
-    </div>
+    </div> -->
     <div class="col sym clickable" on:click={() => sortBy("location")}>
       <div>
         {#if sortMetric == "location"}
           <span class="sort-icon">
-            <Icon name="arrow" direction={isSortReversed ? "n" : "s"} />
+            <Icon name="arrow" direction={isSortReversed ? "s" : "n"} />
           </span>
         {/if}
         Location
@@ -80,7 +97,7 @@
       <div>
         {#if sortMetric == "date"}
           <span class="sort-icon">
-            <Icon name="arrow" direction={isSortReversed ? "n" : "s"} />
+            <Icon name="arrow" direction={isSortReversed ? "s" : "n"} />
           </span>
         {/if}
         Approvals
@@ -89,9 +106,9 @@
     <div class="col text med-wide">Training</div>
   </div>
   <div class="rows">
-    {#each sortedData as test}
+    {#each sortedData as test, i}
       <div class="row">
-        <div class="col vert bold">
+        <div class="col title vert">
           <div class="name">
             { test.name }
           </div>
@@ -99,7 +116,7 @@
             { test.summary }
           </div>
           {#if test.notes}
-            <div class="note" style="color: #16535E">
+            <div class="note" style="margin-top: 0.6em; margin-bottom: 0.6em;">
               { test.notes }
             </div>
           {/if}
@@ -120,7 +137,7 @@
             <Icon name="money" />
           {/each}
         </div>
-        <div class="col text" class:colored={Number.isFinite(test.time[1])}>
+        <!-- <div class="col text" class:colored={Number.isFinite(test.time[1])}>
           {#if test.time[2] == "no information available"}
             <div class="note">no information available</div>
           {:else}
@@ -130,13 +147,13 @@
             class="color-overlay"
             style={`background: ${Number.isFinite(test.time[1]) ? colorScale(test.time[1]) : "#fff"}`}
           />
-        </div>
+        </div> -->
         <div class="col sym">
           <Icon name={test.location[0]} />
         </div>
         <div class="col text vert">
           { test.approvals }
-          <div class="note">
+          <div class="note" style="white-space: nowrap">
             { formatDate(parseDate(test.date)) }<sup>{
               getOrdinal(formatDay(+parseDate(test.date)))
             }</sup>
@@ -145,6 +162,41 @@
         <div class="col text small med-wide">
           { test.training }
         </div>
+        {#if test.time[1]}
+          <div class="time-row">
+            <div class="time-row-label">
+              <div class="time-row-sort" on:click={() => sortBy("time")}>
+                {#if sortMetric == "time"}
+                  <span class="sort-icon">
+                    <Icon name="arrow" direction={isSortReversed ? "s" : "n"} />
+                  </span>
+                {/if}
+                Time required
+              </div>
+              <div class="time-row-value">
+                { test.time[2] || "" }
+              </div>
+            </div>
+            {#if test.time[1]}
+              <div class="time-row-chart">
+                <div
+                  class="time-row-chart-fill-background"
+                  style={[
+                    `width: ${xScale(x1Accessor(test))}%`,
+                  ].join("; ")}
+                />
+                <div
+                  class="time-row-chart-fill"
+                  class:time-row-chart-fill--has-error={xAccessor(test) != x1Accessor(test)}
+                  style={[
+                    `left: ${xScale(xAccessor(test)) - (xAccessor(test) == x1Accessor(test) ? 0.5 : 0)}%`,
+                    `width: ${Math.max(1, xScale(x1Accessor(test)) - xScale(xAccessor(test)))}%`,
+                  ].join("; ")}
+                />
+              </div>
+            {/if}
+          </div>
+        {/if}
       </div>
     {/each}
   </div>
@@ -155,6 +207,7 @@
     margin: 1em auto;
     padding: 0 1em;
     max-width: 90em;
+
   }
   .headers {
     position: sticky;
@@ -172,17 +225,22 @@
   }
   .row {
     display: flex;
+    flex-wrap: wrap;
     border-bottom: 1px solid #EAEAEE;
   }
   .row:hover {
-    background: #eaeaee;
+    /* background: #f4f4f4; */
+  }
+  .row:hover .time-row-chart {
+    /* background: #eaeaee; */
   }
   .col {
     position: relative;
     display: flex;
     align-items: center;
+    width: 1em;
+    flex: 3 0 1em;
     padding: 0.6rem 1rem;
-    flex: 3 0;
     overflow: hidden;
   }
   .color-overlay {
@@ -194,14 +252,14 @@
     mix-blend-mode: multiply;
   }
   .sym {
-    flex: 0 5rem;
+    flex: 0 7rem;
     text-align: center;
     justify-content: center;
     /* font-size: 0.8em; */
     /* font-weight: 900; */
   }
   .text {
-    flex: 0 0 5rem;
+    flex: 0 0 7rem;
     text-align: left;
   }
   .bold {
@@ -260,7 +318,92 @@
     font-size: 0.7em;
   }
   .med-wide {
-    flex: 0 0 9rem;
+    flex: 0 0 15rem;
     overflow: hidden;
+  }
+  .title {
+    flex: 0 0 27rem;
+  }
+  .time-row {
+    flex: 1 0 100%;
+    display: flex;
+  }
+  .time-row-label {
+    width: 27rem;
+    flex: 0 0 27rem;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    padding-right: 0.6em;
+    font-size: 0.8em;
+    /* font-weight: 600; */
+  }
+  .time-row-sort {
+    text-align: left;
+    cursor: pointer;
+    padding-left: 1em;
+  }
+  .time-row-value {
+    margin-top: 0.2em;
+    font-size: 0.9em;
+    opacity: 0.6;
+  }
+  .time-row-chart {
+    position: relative;
+    flex: 1;
+    height: 3em;
+    background: #f4f4f4;
+  }
+  .time-row-chart-fill {
+    height: 1em;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    /* border-radius: 1em; */
+    background: linear-gradient(
+      to right,
+      rgba(164, 191, 238, 0.3),
+      rgba(79, 161, 146, 0.3)
+    );
+    /* opacity: 0.3; */
+    /* mix-blend-mode: multiply; */
+    background-size: 70em;
+    transform: translate(0, -50%);
+  }
+  .time-row-chart-fill--has-error {
+    border-left: 1.5px solid #6d84aa;
+    border-right: 1.5px solid #6d84aa;
+  }
+  .time-row-chart-fill:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1em;
+    height: 1em;
+    background: #7b97d4;
+    /* background: currentColor; */
+    border-radius: 100%;
+    border: 1px solid #6d84aa;
+    transform: translate(-50%, -50%);
+  }
+  .time-row-chart-fill-background {
+    height: 0.6em;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    /* border-radius: 0 1em 1em 0; */
+    background: linear-gradient(
+      to right,
+      rgb(164, 191, 238),
+      rgb(79, 161, 146)
+    );
+    background-size: 70em;
+    opacity: 0.5;
+    /* border: 1px solid #6d84aa; */
+    /* background-size: 70em; */
+    transform: translate(0, -50%);
   }
 </style>
