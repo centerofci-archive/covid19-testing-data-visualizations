@@ -121,7 +121,7 @@
             </div>
           {/if}
         </div>
-        <div class="col small vert">
+        <div class="col small vert steps">
           {#each test.unparsedSteps as step, i}
             <div class="step">
               <span class="index">{ i + 1 }.</span> {#if step}
@@ -187,7 +187,7 @@
                 />
                 <div
                   class="time-row-chart-fill"
-                  class:time-row-chart-fill--has-error={xAccessor(test) != x1Accessor(test)}
+                  class:time-row-chart-fill--has-error={x1Accessor(test) - xAccessor(test) > 10}
                   style={[
                     `left: ${xScale(xAccessor(test)) - (xAccessor(test) == x1Accessor(test) ? 0.5 : 0)}%`,
                     `width: ${Math.max(1, xScale(x1Accessor(test)) - xScale(xAccessor(test)))}%`,
@@ -323,6 +323,12 @@
   }
   .title {
     flex: 0 0 27rem;
+    justify-content: flex-start;
+    padding-top: 1em;
+  }
+  .steps {
+    padding-top: 1.2em;
+    padding-bottom: 1.2em;
   }
   .time-row {
     flex: 1 0 100%;
@@ -362,27 +368,27 @@
     top: 50%;
     left: 0;
     /* border-radius: 1em; */
-    background: linear-gradient(
-      to right,
-      rgba(164, 191, 238, 0.3),
-      rgba(79, 161, 146, 0.3)
-    );
     /* opacity: 0.3; */
     /* mix-blend-mode: multiply; */
-    background-size: 70em;
     transform: translate(0, -50%);
   }
   .time-row-chart-fill--has-error {
     border-left: 1.5px solid #6d84aa;
     border-right: 1.5px solid #6d84aa;
+    background: linear-gradient(
+      to right,
+      rgba(164, 191, 238, 0.3),
+      rgba(79, 161, 146, 0.3)
+    );
+    background-size: 70em;
   }
   .time-row-chart-fill:before {
     content: "";
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 1em;
-    height: 1em;
+    width: 0.7em;
+    height: 0.7em;
     background: #7b97d4;
     /* background: currentColor; */
     border-radius: 100%;
@@ -390,7 +396,7 @@
     transform: translate(-50%, -50%);
   }
   .time-row-chart-fill-background {
-    height: 0.6em;
+    height: 0.5em;
     position: absolute;
     top: 50%;
     left: 0;

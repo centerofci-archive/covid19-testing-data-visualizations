@@ -109,3 +109,9 @@ export const parseLocation = str => {
     lowerString.includes("poc") ? ["poc", parts[1]] :
     [null, lowerString]
 }
+
+export const getNickname = str => {
+  let abbr = str.split(/\(/g).slice(-1)[0].replace(/\)/g, "")
+  if (abbr.length > 16) abbr = abbr.slice(0, 13) + "..."
+  return abbr
+}

@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte'
 	import { csv } from "d3-fetch"
 
-	import { testUrl, methodsUrl, steps, parseStep, parseTime, getOrdinalLevel, ordinalLevels, parseLocation,parseDate, formatDate } from "./data-utils"
+	import { testUrl, methodsUrl, getNickname, steps, parseStep, parseTime, getOrdinalLevel, ordinalLevels, parseLocation,parseDate, formatDate } from "./data-utils"
 	import { flatten, getUrlParams } from "./utils"
 	import Steps from "./Steps.svelte"
 	import Timeline from "./Timeline.svelte"
@@ -24,6 +24,7 @@
 				const parsedData = res.map(d => ({
 					// ...d,
 					name: d["Test Name"],
+					nickname: getNickname(d["Test Name"]),
 					date: d["Date of EUA"],
 					summary: d["Diagnostic Summary"],
 					time: parseTime(d["Time (Estimated)"]),
