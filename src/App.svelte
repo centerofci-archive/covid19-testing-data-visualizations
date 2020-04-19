@@ -138,17 +138,36 @@
 						<p>
 							{ activeTest.summary }
 						</p>
-						<h6>Notes</h6>
-						<p>
-							{ activeTest.notes }
-						</p>
+						{#if activeTest.notes}
+							<h6>Notes</h6>
+							<p>
+								{ activeTest.notes }
+							</p>
+						{/if}
 						<h6>Steps</h6>
+						<div class="steps">
+							{#each activeTest.unparsedSteps as step, i}
+								<div class="step">
+									<div class="step-index">
+										{ i + 1 }
+									</div>
+									<div class="step-text">
+										{#if step}
+											{ step }
+										{:else}
+											<i>no information available</i>
+										{/if}
+									</div>
+								</div>
+							{/each}
+						</div>
+						<h6>Time Required</h6>
 						<p>
-							{ activeTest.unparsedSteps.join(", ") }
-						</p>
-						<h6>Time</h6>
-						<p>
-							{ activeTest.time }
+							{#if activeTest.time[2]}
+								{ activeTest.time[2] }
+							{:else}
+								<i>no information available</i>
+							{/if}
 						</p>
 					</div>
 				{/if}
@@ -222,11 +241,12 @@
 	.test-info {
 		margin-bottom: 1px;
 		width: 100%;
-		height: 30em;
+		height: 40em;
 		padding: 0.6rem 1.6rem;
-		font-size: 0.8em;
 		background: #3A3253;
 		color: #E1DCE4;
+		font-size: 0.8em;
+		overflow: auto;
 	}
 	.test-info .date {
 		margin-bottom: 0.6em;
@@ -243,5 +263,21 @@
 	.test-info :global(p) {
 		margin: 0;
 		padding: 0.3em 0 1.6em;
+	}
+	.steps {
+		margin-bottom: 1.5em;
+	}
+	.step {
+		display: flex;
+		margin-bottom: 0.6em;
+	}
+	.step-index {
+    margin-left: -4.2em;
+		margin-right: 0.6em;
+    opacity: 0.5;
+	}
+	i {
+		font-style: italic;
+		opacity: 0.6;
 	}
 </style>
