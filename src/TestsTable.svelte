@@ -4,7 +4,7 @@
 	import { timeFormat } from "d3-time-format"
   import { scaleLinear } from "d3-scale"
 
-	import { parseDate } from "./data-utils"
+	import { locationColors, parseDate } from "./data-utils"
 	import { getOrdinal } from "./utils"
 	import Icon from "./Icon.svelte"
 
@@ -148,7 +148,7 @@
             style={`background: ${Number.isFinite(test.time[1]) ? colorScale(test.time[1]) : "#fff"}`}
           />
         </div> -->
-        <div class="col sym">
+        <div class="col sym" style={`color: ${locationColors[test.location[0]]}`}>
           <Icon name={test.location[0]} />
         </div>
         <div class="col text vert">

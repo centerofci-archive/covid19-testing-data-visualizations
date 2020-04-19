@@ -6,24 +6,18 @@
   import { forceSimulation, forceX, forceY, forceCollide, forceRadial } from "d3-force"
 
   import { flatten, rectCollide } from "./utils"
-  import { ordinalLevels, parseDate } from "./data-utils"
+  import { ordinalLevels, locationColors, parseDate } from "./data-utils"
 
   export let data = []
 
   let width = 1200
   let height = 700
 
-  const colorMap = {
-    poc: "#A4C0BF",
-    // centralized: "#BE9D9F",
-    centralized: "#BAA0A5",
-  }
-
   const xAccessor = d => d.time[0]
   const x1Accessor = d => d.time[1]
   const yAccessor = d => d.cost
   const rAccessor = d => d.cost
-  const colorAccessor = d => colorMap[d.location[0]] || "#CDCFD8"
+  const colorAccessor = d => locationColors[d.location[0]] || "#CDCFD8"
 
   $: rScale = scaleSqrt()
     .domain(extent(data, rAccessor))
@@ -142,17 +136,17 @@
 
 <div class="c" bind:clientWidth={width}>
   <div class="title">
-    Each circle is a specific test, processed in either <span style={`color: ${colorMap["poc"]}; font-weight: 700`}>POC</span> or <span style={`color: ${colorMap["centralized"]}; font-weight: 700`}>Centralized</span>
+    Each circle is a specific test, processed in either <span style={`color: ${locationColors["poc"]}; font-weight: 700`}>POC</span> or <span style={`color: ${locationColors["centralized"]}; font-weight: 700`}>Centralized</span>
   </div>
   <!-- <div class="legend">
     <div class="legend-item">
-      <div class="legend-item-square" style={`color: ${colorMap["poc"]}`} />
+      <div class="legend-item-square" style={`color: ${locationColors["poc"]}`} />
       <div class="legend-item-label">
         POC
       </div>
     </div>
     <div class="legend-item">
-      <div class="legend-item-square" style={`color: ${colorMap["centralized"]}`} />
+      <div class="legend-item-square" style={`color: ${locationColors["centralized"]}`} />
       <div class="legend-item-label">
         Centralized
       </div>

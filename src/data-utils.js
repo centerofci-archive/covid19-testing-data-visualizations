@@ -110,6 +110,13 @@ export const parseLocation = str => {
     [null, lowerString]
 }
 
+export const locationColors = {
+  poc: "#A4C0BF",
+  // centralized: "#BE9D9F",
+  centralized: "#BAA0A5",
+  "": "#CDCFD8",
+}
+
 export const getNickname = str => {
   let abbr = str.split(/\(/g).slice(-1)[0].replace(/\)/g, "")
   if (abbr.length > 16) abbr = abbr.slice(0, 13) + "..."
