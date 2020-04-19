@@ -101,7 +101,7 @@
 		<TestsTable data={tests} />
 	{/if}
 
-	{#if sections.includes("clusters")}
+	{#if sections.includes("scatter")}
 		<Clusters data={tests} />
 	{/if}
 

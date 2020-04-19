@@ -136,7 +136,7 @@
 
 <div class="c" bind:clientWidth={width}>
   <div class="title">
-    Each circle is a specific test, processed in either <span style={`color: ${locationColors["poc"]}; font-weight: 700`}>POC</span> or <span style={`color: ${locationColors["centralized"]}; font-weight: 700`}>Centralized</span>
+    Each circle is a specific test, processed at either <span style={`color: ${locationColors["poc"]}; font-weight: 700`}>the point of care</span> or <span style={`color: ${locationColors["centralized"]}; font-weight: 700`}>in a centralized location</span>
   </div>
   <!-- <div class="legend">
     <div class="legend-item">
