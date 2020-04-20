@@ -9,7 +9,11 @@
 	import Icon from "./Icon.svelte"
 
   export let data = []
-  $: console.table(data[0])
+
+  const locationLabels = {
+    poc: "Point-of-care",
+    centralized: "Centralized",
+  }
 
   let sortMetric = "time"
   let isSortReversed = false
@@ -18,6 +22,7 @@
   const formatDay = timeFormat("%-d")
 
   const getMetric = (d, metric) => (
+    metric == "name" ? d.name :
     metric == "date" ? -parseDate(d.date) :
     metric == "cost" ? d.cost :
     metric == "time" ? d.time[0] ? (
@@ -52,16 +57,25 @@
     ]))
     .range([0, 100])
 
-  $: xTicks = xScale.ticks(3)
-    .map(d => ([
-      d,
-      xScale(d),
-    ]))
+  $: xTicks = [
+    ["1 hour", xScale(60 * 1)],
+    ["12 hours", xScale(60 * 12)],
+    ["1 day", xScale(60 * 24)],
+    ["1.5 days", xScale(60 * 24 * 1.5)],
+    ["2 days", xScale(60 * 24 * 2)],
+  ]
 </script>
 
 <div class="c">
   <div class="headers">
-    <div class="col title">Test name</div>
+    <div class="col title clickable" on:click={() => sortBy("name")}>
+      {#if sortMetric == "name"}
+        <span class="sort-icon">
+          <Icon name="arrow" direction={isSortReversed ? "s" : "n"} />
+        </span>
+      {/if}
+      Test name
+    </div>
     <div class="col">Methods</div>
     <div class="col sym clickable" on:click={() => sortBy("cost")}>
       <div>
@@ -148,8 +162,13 @@
             style={`background: ${Number.isFinite(test.time[1]) ? colorScale(test.time[1]) : "#fff"}`}
           />
         </div> -->
-        <div class="col sym" style={`color: ${locationColors[test.location[0]]}`}>
-          <Icon name={test.location[0]} />
+        <div class="col sym vert">
+          <div style={`color: ${locationColors[test.location[0]]}`}>
+            <Icon name={test.location[0]} />
+          </div>
+          <div class="note">
+            { locationLabels[test.location[0]] || "" }
+          </div>
         </div>
         <div class="col text vert">
           { test.approvals }
@@ -193,6 +212,11 @@
                     `width: ${Math.max(1, xScale(x1Accessor(test)) - xScale(xAccessor(test)))}%`,
                   ].join("; ")}
                 />
+                {#each xTicks as [label, offset]}
+                  <div class="time-row-tick" style={`left: ${offset}%`}>
+                    { label }
+                  </div>
+                {/each}
               </div>
             {/if}
           </div>
@@ -251,13 +275,6 @@
     left: 0;
     mix-blend-mode: multiply;
   }
-  .sym {
-    flex: 0 7rem;
-    text-align: center;
-    justify-content: center;
-    /* font-size: 0.8em; */
-    /* font-weight: 900; */
-  }
   .text {
     flex: 0 0 7rem;
     text-align: left;
@@ -273,6 +290,17 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
+  }
+  .sym {
+    flex: 0 7rem;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    /* font-size: 0.8em; */
+    /* font-weight: 900; */
+  }
+  .sym .note {
+    padding-right: 0;
   }
   .colored {
     background: #D9D8E1;
@@ -333,6 +361,7 @@
   .time-row {
     flex: 1 0 100%;
     display: flex;
+    margin-top: 0.9em;
   }
   .time-row-label {
     width: 27rem;
@@ -371,6 +400,30 @@
     /* opacity: 0.3; */
     /* mix-blend-mode: multiply; */
     transform: translate(0, -50%);
+  }
+  .time-row-tick {
+    position: absolute;
+    top: -1.5em;
+    left: 0;
+    font-size: 0.5em;
+    /* border-radius: 1em; */
+    /* opacity: 0.3; */
+    /* mix-blend-mode: multiply; */
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transform: translate(-50%, 0);
+    opacity: 0.6;
+    white-space: nowrap;
+  }
+  .time-row-tick:before {
+    content: "";
+    position: absolute;
+    bottom: -0.9em;
+    left: 50%;
+    height: 0.5em;
+    margin-left: -1px;
+    border-left: 1px solid;
+    opacity: 0.6;
   }
   .time-row-chart-fill--has-error {
     border-left: 1.5px solid #6d84aa;
