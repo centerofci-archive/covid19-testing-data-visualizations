@@ -15,6 +15,12 @@
 
   const costOrdinalLabels = ["cheaper", "medium cost", "expensive"]
   const sensitivityOrdinalLabels = ["low sensitivity", "medium sensitivity", "high sensitivity"]
+
+  $: sortedMethods = steps.map((step, i) => (
+    methods
+      .filter(({ stepIndex }) => stepIndex == i)
+      .sort((a, b) => b.numTimesUsed - a.numTimesUsed)
+  ))
 </script>
 
 <div class="c">
@@ -27,7 +33,7 @@
         { step }
       </h6>
       <div class="step-options">
-        {#each methods.filter(({ stepIndex }) => stepIndex == i) as { name, cost, sensitivity, time, numTimesUsed, notes}, methodI}
+        {#each sortedMethods[i] as { name, cost, sensitivity, time, numTimesUsed, notes}, methodI}
           <div class="step-option">
             <div class="step-option-name" class:active={activeSteps && activeSteps[i].includes(name.toLowerCase())}>
               <div class="step-name">
