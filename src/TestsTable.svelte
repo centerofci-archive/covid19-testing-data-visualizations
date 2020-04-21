@@ -190,7 +190,7 @@
                     <Icon name="arrow" direction={isSortReversed ? "s" : "n"} />
                   </span>
                 {/if}
-                Time required
+                Processing Time
               </div>
               <div class="time-row-value">
                 { test.time[2] || "" }

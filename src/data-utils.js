@@ -20,7 +20,7 @@ export const steps = [
 export const ordinalLevels = ["low", "medium", "high"]
 
 export const getOrdinalLevel = str => {
-  const index = ordinalLevels.indexOf(str)
+  const index = ordinalLevels.indexOf(str.toLowerCase())
   return index == -1 ? null : index + 1
 }
 

@@ -161,7 +161,7 @@
 								</div>
 							{/each}
 						</div>
-						<h6>Time Required</h6>
+						<h6>Processing Time</h6>
 						<p>
 							{#if activeTest.time[2]}
 								{ activeTest.time[2] }
