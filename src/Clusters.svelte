@@ -106,7 +106,7 @@
           width - textWidth * 0.8,
           Math.max(
             // textWidth / 2,
-            d.x,
+            d.x - d.r / 2,
           )
         ),
         y: d.y + 5,

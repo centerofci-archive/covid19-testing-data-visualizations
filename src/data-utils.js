@@ -117,8 +117,14 @@ export const locationColors = {
   "": "#CDCFD8",
 }
 
+const maxStringLength = 13
 export const getNickname = str => {
   let abbr = str.split(/\(/g).slice(-1)[0].replace(/\)/g, "")
-  if (abbr.length > 16) abbr = abbr.slice(0, 13) + "..."
+  if (abbr.length > maxStringLength) abbr = (
+    abbr
+      .split(/ |\,/g)[0]
+      .slice(0, maxStringLength - 3)
+      + "..."
+  )
   return abbr
 }
