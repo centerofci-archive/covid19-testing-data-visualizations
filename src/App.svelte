@@ -28,7 +28,7 @@
 					date: d["Date of EUA"],
 					summary: d["Diagnostic Summary"],
 					time: parseTime(d["Time (Estimated)"]),
-					cost: getOrdinalLevel(d["Cost (high, medium or low)"]),
+					cost: getOrdinalLevel(d["Cost"]),
 					location: parseLocation(d["Centralized/POC"]),
 					approvals: d["Approvals"],
 					training: d["Training Requirements"],
