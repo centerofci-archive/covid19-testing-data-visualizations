@@ -25,10 +25,10 @@ export const getOrdinalLevel = str => {
 }
 
 const nasopharyngealKeywords = [
-  "nasopharyngeal",
-  "nasal",
-  "combined nasal",
-  "throat",
+  "nasopharyngeal swab",
+  // "nasal",
+  // "combined nasal",
+  // "throat",
 ]
 export const parseStep = (str, index) => {
   const lowerString = str.toLowerCase()
