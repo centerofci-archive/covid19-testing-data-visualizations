@@ -2,7 +2,7 @@
   "name": "svelte-app",
   "version": "1.0.0",
   "scripts": {
-    "build": "rollup -c",
+    "build": "rm -rf docs && rollup -c && scp -r public docs",
     "dev:rollup": "rollup -c -w",
     "dev:livereload": "cross-env LIVERELOAD=1 rollup -c -w",
     "dev:nollup": "cross-env NOLLUP=1 nollup -c --hot --port 5000 --content-base ./public",
