@@ -236,9 +236,10 @@
 
 <style>
   .c {
-    margin: 0 auto 1em;
+    margin: 0 auto;
     padding: 0 1em;
     max-width: 90em;
+    overflow: auto;
 
   }
   .headers {

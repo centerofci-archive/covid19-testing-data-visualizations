@@ -168,6 +168,7 @@
 		box-sizing: border-box;
 	}
 	:global(body) {
+		padding: 0;
 		color: #3A3253;
 		font-family: 'Inter', sans-serif;
 	}
@@ -188,6 +189,7 @@
 	.title {
 		flex: 0 0 1rem;
 		padding: 1rem 1.6rem;
+		border-bottom: 1px solid;
 	}
 	.title h2 {
 		margin: 0;
@@ -195,7 +197,9 @@
 	}
 	.main {
 		flex: 3;
-		overflow: auto;
+		/* overflow: auto; */
+		display: flex;
+		overflow: hidden;
 	}
 	.caption {
 		flex: 0 0 2rem;
@@ -204,11 +208,13 @@
 		font-size: 0.7em;
 		line-height: 1.3em;
 		background: #f4f4f4;
+		border-top: 1px solid;
 	}
 
 	.test-list {
 		display: flex;
 		align-items: flex-start;
+		font-size: 0.8em;
 		/* margin-bottom: 6px; */
 		/* height: 100%; */
 		/* overflow: hidden; */
@@ -252,6 +258,7 @@
 
 		max-width: 96%;
     max-height: 100vh;
+		height: 100%;
     overflow: auto;
 	}
 	.test-info {
@@ -259,7 +266,7 @@
 		justify-content: flex-end;
 		align-items: flex-end;
 		position: fixed;
-		bottom: 2em;
+		bottom: 8em;
 		right: 23em;
 		margin-bottom: 1px;
 		width: 30em;
@@ -269,7 +276,7 @@
 	.test-info--inline {
 		display: none;
 	}
-	@media (max-width: 1200px) {
+	@media (max-width: 820px) {
 		.test-info {
 			display: none;
 		}
@@ -277,7 +284,10 @@
 			display: block;
 		}
 	}
-	@media (max-width: 826px) {
+	@media (max-width: 800px) {
+		.test-list {
+			width: 100%;
+		}
 		.test-info {
 			display: none;
 		}

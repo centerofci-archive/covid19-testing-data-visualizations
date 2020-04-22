@@ -86,9 +86,6 @@
 	.test-info .date {
 		margin-bottom: 0.6em;
 	}
-	:global(body) {
-		padding: 0;
-	}
 	.test-info :global(h3) {
 		display: flex;
 		justify-content: space-between;

@@ -129,7 +129,10 @@
   .c {
     display: flex;
     justify-content: center;
+    height: 100%;
     width: 98%;
+    font-size: 0.8em;
+    padding-left: 0.8rem;
 		/* padding-top: 2em; */
     /* text-align: center; */
     /* overflow: hidden; */
@@ -142,7 +145,8 @@
     height: 3em;
     display: flex;
     align-items: center;
-    margin-left: -1.5em;
+    /* margin-left: -1.5em; */
+    padding-left: 0.5em;
     margin-bottom: 0.6em;
     padding: 1em 0;
     /* justify-content: center; */
@@ -172,10 +176,11 @@
   }
   .step {
     flex: 1;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0 1em 0 2em;
+    /* padding: 0 1em 0 2em; */
   }
   .step-options {
     display: flex;
@@ -188,6 +193,8 @@
     position: relative;
     margin: 0.3em;
     display: flex;
+    padding-right: 2em;
+    padding-left: 1em;
   }
   .step-option-main {
     flex: 3;
@@ -383,7 +390,7 @@
     margin-top: -0.6em;
     margin-right: 0.6em;
   }
-  @media (max-width: 1250px) {
+  @media (max-width: 820px) {
     .c {
       flex-wrap: wrap;
     }
@@ -393,19 +400,37 @@
       overflow: auto;
     }
   }
-	@media (max-width: 826px) {
+	@media (max-width: 800px) {
     .step-arrow {
       transform: translate(90deg);
     }
+    .c {
+      flex-direction: column;
+      flex-wrap: nowrap;
+      max-height: 100%;
+      /* overflow: hidden; */
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding-left: 0;
+    }
     .step {
+      flex: 1;
+      padding-left: 2em;
+      padding-right: 0;
       border-bottom: 1px solid #000;
       padding-bottom: 1em;
+      height: auto;
+      width: 100%;
+      min-width: 0;
       /* padding-top: 1em; */
-      max-height: 25vh;
+      /* max-height: 25vh; */
       align-items: flex-start;
     }
+    .step:last-of-type {
+      border-bottom: none;
+    }
     .step-label {
-      width: calc(100% + 2em);
+      width: calc(100% + 1em);
       margin-left: -1em;
       box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
     }
