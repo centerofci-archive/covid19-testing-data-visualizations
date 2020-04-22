@@ -209,7 +209,7 @@
     margin-left: -1.6em;
     border-radius: 3px;
     border: 1px solid #E1DCE4;
-    transition: all 0.3s ease-out;
+    /* transition: all 0.3s ease-out; */
   }
   @keyframes check {
     0% { width: 0; }
@@ -259,6 +259,8 @@
 		/* color: #E1DCE4; */
   }
   .step-option-text.active .step-option-checkbox {
+    color: white;
+    background: #3A3253;
     border: 1px solid #3A3253;
   }
   .step-bars {
