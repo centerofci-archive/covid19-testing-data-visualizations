@@ -91,9 +91,8 @@
                 {/if}
                 <div class="bar-fill"
                   style={`width: ${((cost * 100) / 3) || 0}%`}
-                >
-                  <div class="bar-value">{costOrdinalLabels[cost - 1] || ""}</div>
-                </div>
+                />
+                <div class="bar-value">{costOrdinalLabels[cost - 1] || ""}</div>
               </div>
               <div class="bar">
                 {#if !i && !methodI}
@@ -101,9 +100,8 @@
                 {/if}
                 <div class="bar-fill"
                   style={`width: ${timeScale(time[0]) || 0}%`}
-                >
-                  <div class="bar-value">{time[2] || ""}</div>
-                </div>
+                />
+                <div class="bar-value">{time[2] || ""}</div>
               </div>
               <div class="bar">
                 {#if !i && !methodI}
@@ -111,9 +109,8 @@
                 {/if}
                 <div class="bar-fill"
                   style={`width: ${((sensitivity * 100) / 3) || 0}%`}
-                >
-                  <div class="bar-value">{sensitivityOrdinalLabels[sensitivity - 1] || ""}</div>
-                </div>
+                />
+                <div class="bar-value">{sensitivityOrdinalLabels[sensitivity - 1] || ""}</div>
               </div>
             </div>
           </div>
@@ -147,6 +144,7 @@
     align-items: center;
     margin-left: -1.5em;
     margin-bottom: 0.6em;
+    padding: 1em 0;
     /* justify-content: center; */
     font-weight: 800;
     width: 100%;
@@ -164,6 +162,7 @@
     justify-content: center;
     height: 1.7em;
     width: 1.7em;
+		flex: none;
     margin-right: 0.7em;
     margin-bottom: -0.1em;
     line-height: 1em;
@@ -212,8 +211,14 @@
     border: 1px solid #E1DCE4;
     transition: all 0.3s ease-out;
   }
+  @keyframes check {
+    0% { width: 0; }
+    100% { width: 1em; }
+  }
   .check {
     font-size: 0.8em;
+    overflow: hidden;
+    animation: check 0.5s ease-out;
   }
   .step-option-name {
     display: flex;
@@ -312,16 +317,21 @@
     top: -0.3em;
     /* right: -0.4em; */
     left: 0.4em;
+    max-width: 100%;
     font-weight: 600;
     white-space: nowrap;
     /* transform: translateX(100%); */
     opacity: 0;
+    overflow: hidden;
   }
   .step-option:hover .bar-label {
     opacity: 0;
   }
   .step-option:hover .bar-value {
     opacity: 1;
+  }
+  .step-option:hover .bar-fill {
+    opacity: 0.5;
   }
   .arrow-swoop {
     /* transform: scaleX(-1); */
@@ -371,5 +381,35 @@
     /* margin-left: 1em; */
     margin-top: -0.6em;
     margin-right: 0.6em;
+  }
+  @media (max-width: 1250px) {
+    .c {
+      flex-wrap: wrap;
+    }
+    .step {
+      min-width: 15em;
+      max-height: 50vw;
+      overflow: auto;
+    }
+  }
+	@media (max-width: 826px) {
+    .step-arrow {
+      transform: translate(90deg);
+    }
+    .step {
+      border-bottom: 1px solid #000;
+      padding-bottom: 1em;
+      /* padding-top: 1em; */
+      max-height: 25vh;
+      align-items: flex-start;
+    }
+    .step-label {
+      width: calc(100% + 2em);
+      margin-left: -1em;
+      box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
+    }
+    .c {
+      padding-top: 0;
+    }
   }
 </style>

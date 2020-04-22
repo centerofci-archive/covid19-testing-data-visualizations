@@ -4,10 +4,12 @@
 
 	import { testUrl, methodsUrl, getNickname, steps, parseStep, parseTime, getOrdinalLevel, ordinalLevels, parseLocation,parseDate, formatDate } from "./data-utils"
 	import { flatten, getUrlParams } from "./utils"
+	import Icon from "./Icon.svelte"
 	import Steps from "./Steps.svelte"
 	import Timeline from "./Timeline.svelte"
 	import TestsTable from "./TestsTable.svelte"
 	import Clusters from "./Clusters.svelte"
+	import TestInfo from "./TestInfo.svelte"
 
 	let tests = []
 	let methods = []
@@ -115,6 +117,7 @@
 
 			<div class="list">
 				<div class="tests">
+					<h6 class="list-title">Tests</h6>
 					{#each tests as test}
 						<div
 							class="test"
@@ -122,60 +125,16 @@
 							on:mouseenter={() => activeTest = test}>
 							{ test.name }
 						</div>
+						{#if activeTest && activeTest == test}
+							<div class="test-info--inline">
+								<TestInfo test={activeTest} onClose={() => activeTest = null} isInline />
+							</div>
+						{/if}
 					{/each}
 				</div>
 				{#if activeTest}
 					<div class="test-info">
-						<h3>
-							{ activeTest.name }
-							<div class="infos">
-								<div class="info">
-									{#if activeTest.cost}
-										{#each new Array(activeTest.cost || 0).fill(0) as _}
-											$
-										{/each}
-									{/if}
-								</div>
-							</div>
-						</h3>
-						<p>
-							{ activeTest.summary }
-						</p>
-						{#if activeTest.date}
-							<h6>EUA Approval Date</h6>
-							<div class="date">{ formatDate(parseDate(activeTest.date)) }</div>
-						{/if}
-						{#if activeTest.notes}
-							<h6>Notes</h6>
-							<p>
-								{ activeTest.notes }
-							</p>
-						{/if}
-						<h6>Steps</h6>
-						<div class="steps">
-							{#each activeTest.unparsedSteps as step, i}
-								<div class="step">
-									<div class="step-index">
-										{ i + 1 }
-									</div>
-									<div class="step-text">
-										{#if step}
-											{ step }
-										{:else}
-											<i>no information available</i>
-										{/if}
-									</div>
-								</div>
-							{/each}
-						</div>
-						<h6>Processing Time</h6>
-						<p>
-							{#if activeTest.time[2]}
-								{ activeTest.time[2] }
-							{:else}
-								<i>no information available</i>
-							{/if}
-						</p>
+						<TestInfo test={activeTest} onClose={() => activeTest = null} />
 					</div>
 				{/if}
 			</div>
@@ -217,6 +176,9 @@
 		width: 20em;
 		flex-direction: column;
 	}
+	.list-title {
+		padding-left: 1.7em;
+	}
 	.tests {
 		flex: 1;
 		padding: 1em;
@@ -234,6 +196,7 @@
 	}
 	.test.active {
 		background: #E1DCE4;
+		font-weight: 700;
 	}
 	.steps {
 		flex: 1;
@@ -247,49 +210,34 @@
     overflow: auto;
 	}
 	.test-info {
+		display: flex;
+		justify-content: flex-end;
+		align-items: flex-end;
 		position: fixed;
 		bottom: 2em;
-		right: 2em;
+		right: 23em;
 		margin-bottom: 1px;
-		max-width: 30em;
-		max-height: 20em;
+		width: 30em;
+		max-height: 50vh;
 		height: 40em;
-		padding: 0.6rem 1.6rem;
-		background: #3A3253;
-		color: #E1DCE4;
-		font-size: 0.8em;
-		overflow: auto;
 	}
-	.test-info .date {
-		margin-bottom: 0.6em;
+	.test-info--inline {
+		display: none;
 	}
-	:global(body) {
-		padding: 0;
+	@media (max-width: 1200px) {
+		.test-info {
+			display: none;
+		}
+		.test-info--inline {
+			display: block;
+		}
 	}
-	.test-info :global(h3) {
-		display: flex;
-		justify-content: space-between;
-		margin-bottom: 0.3em;
-		font-size: 1.6em;
-	}
-	.test-info :global(p) {
-		margin: 0;
-		padding: 0.3em 0 1.6em;
-	}
-	.test-info .steps {
-		margin-bottom: 1.5em;
-	}
-	.step {
-		display: flex;
-		margin-bottom: 0.6em;
-	}
-	.step-index {
-    margin-left: -4.2em;
-		margin-right: 0.6em;
-    opacity: 0.5;
-	}
-	i {
-		font-style: italic;
-		opacity: 0.6;
+	@media (max-width: 826px) {
+		.test-info {
+			display: none;
+		}
+		.test-info--inline {
+			display: block;
+		}
 	}
 </style>
