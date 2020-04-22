@@ -62,7 +62,7 @@
     ["12 hours", xScale(60 * 12)],
     ["1 day", xScale(60 * 24)],
     ["1.5 days", xScale(60 * 24 * 1.5)],
-    ["2 days", xScale(60 * 24 * 2)],
+    // ["2 days", xScale(60 * 24 * 2)],
   ]
 </script>
 
@@ -125,7 +125,6 @@
     {#each sortedData as test, i}
       <div class="row">
         <div class="col title vert">
-          <h6 class="col-mobile-title">Test name</h6>
           <div class="name">
             { test.name }
           </div>
@@ -139,7 +138,9 @@
           {/if}
         </div>
         <div class="col small vert steps">
-          <h6 class="col-mobile-title">Methods</h6>
+          <h6 class="col-mobile-title">
+            Methods
+          </h6>
           {#each test.unparsedSteps as step, i}
             <div class="step">
               <span class="index">{ i + 1 }.</span> {#if step}
@@ -151,7 +152,14 @@
           {/each}
         </div>
         <div class="col sym">
-          <h6 class="col-mobile-title">Cost</h6>
+          <h6 class="col-mobile-title" on:click={() => sortBy("cost")}>
+            {#if sortMetric == "cost"}
+              <span class="sort-icon">
+                <Icon name="arrow" direction={isSortReversed ? "s" : "n"} />
+              </span>
+            {/if}
+            Cost
+          </h6>
           {#each new Array(test.cost).fill(0) as _}
             <Icon name="money" />
           {/each}
@@ -168,7 +176,14 @@
           />
         </div> -->
         <div class="col sym vert">
-          <h6 class="col-mobile-title">Location</h6>
+          <h6 class="col-mobile-title" on:click={() => sortBy("location")}>
+            {#if sortMetric == "location"}
+              <span class="sort-icon">
+                <Icon name="arrow" direction={isSortReversed ? "s" : "n"} />
+              </span>
+            {/if}
+            Location
+          </h6>
           <div style={`color: ${locationColors[test.location[0]]}`}>
             <Icon name={test.location[0]} />
           </div>
@@ -177,7 +192,14 @@
           </div>
         </div>
         <div class="col text vert">
-          <h6 class="col-mobile-title">Approvals</h6>
+          <h6 class="col-mobile-title" on:click={() => sortBy("date")}>
+            {#if sortMetric == "date"}
+              <span class="sort-icon">
+                <Icon name="arrow" direction={isSortReversed ? "s" : "n"} />
+              </span>
+            {/if}
+            Approvals
+          </h6>
           { test.approvals }
           <div class="note" style="white-space: nowrap">
             { formatDate(parseDate(test.date)) }<sup>{
@@ -186,7 +208,9 @@
           </div>
         </div>
         <div class="col text small med-wide">
-          <h6 class="col-mobile-title">Training</h6>
+          <h6 class="col-mobile-title">
+            Training
+          </h6>
           { test.training }
         </div>
         {#if test.time[1]}
@@ -236,11 +260,11 @@
 
 <style>
   .c {
+    max-width: 90rem;
+    width: 100%;
     margin: 0 auto;
-    padding: 0 1em;
-    max-width: 90em;
+    /* padding: 0 1em; */
     overflow: auto;
-
   }
   .headers {
     position: sticky;
@@ -478,7 +502,15 @@
   .col-mobile-title {
     display: none;
   }
-  @media (max-width: 1190px) {
+  @media (max-width: 1200px) {
+    .c {
+      font-size: 0.9em;
+    }
+    .title {
+      flex: 0 0 19rem;
+    }
+  }
+  @media (max-width: 1000px) {
     .row {
       flex-wrap: wrap;
       align-items: flex-start;
