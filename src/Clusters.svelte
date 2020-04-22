@@ -290,10 +290,11 @@
 <style>
   .c {
     position: relative;
-    width: 80%;
+    width: calc(100% - 1.5rem);
     height: 700px;
     margin: 1em auto;
-    padding-top: 3em;
+    /* padding-top: 3em; */
+    margin-bottom: 6em;
   }
   svg {
     overflow: visible;

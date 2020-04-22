@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte'
 	import { csv } from "d3-fetch"
 
-	import { testUrl, methodsUrl, getNickname, steps, parseStep, parseTime, getOrdinalLevel, ordinalLevels, parseLocation,parseDate, formatDate } from "./data-utils"
+	import { context, testUrl, methodsUrl, getNickname, steps, parseStep, parseTime, getOrdinalLevel, ordinalLevels, parseLocation,parseDate, formatDate } from "./data-utils"
 	import { flatten, getUrlParams } from "./utils"
 	import Icon from "./Icon.svelte"
 	import Steps from "./Steps.svelte"
@@ -16,10 +16,16 @@
 	let sections = ["steps"]
 	let missingMethods = []
 	let activeTest = null
+	let title = null
+	let caption = null
 
 	onMount(() => {
 		const urlParams = getUrlParams()
 		sections = urlParams["section"] ? urlParams["section"].split(",") : ["steps"]
+		const contextData = sections.length > 1 ? {} : context[sections[0]] || {}
+		title = contextData.title
+		caption = contextData.caption
+
 
 		csv(testUrl)
 			.then(res => {
@@ -94,54 +100,65 @@
 	$: tests, methods, updateMethods()
 
 	$: activeSteps = !activeTest ? null : activeTest.steps
+
 </script>
 
 <main>
-	{#if sections.includes("timeline")}
-		<Timeline data={tests} />
-	{/if}
-
-	{#if sections.includes("table")}
-		<TestsTable data={tests} />
-	{/if}
-
-	{#if sections.includes("scatter")}
-		<Clusters data={tests} />
-	{/if}
-
-	{#if sections.includes("steps")}
-		<div class="test-list">
-			<div class="steps">
-				<Steps {methods} {missingMethods} {activeSteps} />
-			</div>
-
-			<div class="list">
-				<div class="tests">
-					<h6 class="list-title">Tests</h6>
-					{#each tests as test}
-						<div
-							class="test"
-							class:active={activeTest == test}
-							on:mouseenter={() => activeTest = test}>
-							{ test.name }
-						</div>
-						{#if activeTest && activeTest == test}
-							<div class="test-info--inline">
-								<TestInfo test={activeTest} onClose={() => activeTest = null} isInline />
-							</div>
-						{/if}
-					{/each}
-				</div>
-				{#if activeTest}
-					<div class="test-info">
-						<TestInfo test={activeTest} onClose={() => activeTest = null} />
-					</div>
-				{/if}
-			</div>
-
+	{#if title}
+		<div class="title">
+			<h2>{ title }</h2>
 		</div>
 	{/if}
+	<div class="main">
+		{#if sections.includes("timeline")}
+			<Timeline data={tests} />
+		{/if}
 
+		{#if sections.includes("table")}
+			<TestsTable data={tests} />
+		{/if}
+
+		{#if sections.includes("scatter")}
+			<Clusters data={tests} />
+		{/if}
+
+		{#if sections.includes("steps")}
+			<div class="test-list">
+				<div class="steps">
+					<Steps {methods} {missingMethods} {activeSteps} />
+				</div>
+
+				<div class="list">
+					<div class="tests">
+						<h6 class="list-title">Tests</h6>
+						{#each tests as test}
+							<div
+								class="test"
+								class:active={activeTest == test}
+								on:mouseenter={() => activeTest = test}>
+								{ test.name }
+							</div>
+							{#if activeTest && activeTest == test}
+								<div class="test-info--inline">
+									<TestInfo test={activeTest} onClose={() => activeTest = null} isInline />
+								</div>
+							{/if}
+						{/each}
+					</div>
+					{#if activeTest}
+						<div class="test-info">
+							<TestInfo test={activeTest} onClose={() => activeTest = null} />
+						</div>
+					{/if}
+				</div>
+
+			</div>
+		{/if}
+	</div>
+
+	{#if caption}
+		<div class="caption">{ caption }</div>
+	{/if}
 </main>
 
 <style>
@@ -159,6 +176,34 @@
 		font-size: 0.8em;
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
+	}
+
+	main {
+		display: flex;
+		flex-direction: column;
+		max-height: 100vh;
+		overflow: hidden;
+	}
+
+	.title {
+		flex: 0 0 1rem;
+		padding: 1rem 1.6rem;
+	}
+	.title h2 {
+		margin: 0;
+		padding: 0;
+	}
+	.main {
+		flex: 3;
+		overflow: auto;
+	}
+	.caption {
+		flex: 0 0 2rem;
+		padding: 1rem 1.6rem;
+		font-weight: 500;
+		font-size: 0.7em;
+		line-height: 1.3em;
+		background: #f4f4f4;
 	}
 
 	.test-list {

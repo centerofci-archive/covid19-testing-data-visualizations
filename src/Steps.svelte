@@ -130,7 +130,7 @@
     display: flex;
     justify-content: center;
     width: 98%;
-		padding-top: 2em;
+		/* padding-top: 2em; */
     /* text-align: center; */
     /* overflow: hidden; */
   }

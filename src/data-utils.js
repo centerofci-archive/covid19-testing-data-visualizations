@@ -128,3 +128,18 @@ export const getNickname = str => {
   )
   return abbr
 }
+
+export const context = {
+  steps: {
+    title: "FDA COVID-19 EUA Test Explorer",
+    caption: "The FDA has been issuing Emergency Use Authorizations (EUA) for COVID-19 infection diagnostic tests. In this explorer, we break down and explore each EUA test concerning the four steps of (1) sampling, (2) upstream processing (3) amplification and (4) readouts. For each method in a step, we denote the processing time, sensitivity, and the relative cost, along with a short description of the technique.",
+  },
+  table: {
+    title: "FDA COVID-19 EUA Tests List",
+    caption: "This table, sortable by the test name, processing time, cost, location, and approval date, lists  Emergency Use Authorizations (EUA) for COVID-19 infection diagnostic tests. ",
+  },
+  scatter: {
+    title: "Scatter Plot of Relative Cost Versus Processing Time",
+    caption: "Each test is plotted as a function of its relative cost and processing time. Scalability and sensitivity of each test, which are difficult to estimate and not shown here,  are two complex metrics influenced by the technique of sampling, transporting of specimen collections to centralized labs, and other factors. ",
+  },
+}

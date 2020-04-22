@@ -236,7 +236,7 @@
 
 <style>
   .c {
-    margin: 1em auto;
+    margin: 0 auto 1em;
     padding: 0 1em;
     max-width: 90em;
 
@@ -384,6 +384,7 @@
     /* font-weight: 600; */
   }
   .time-row-sort {
+    position: relative;
     text-align: left;
     cursor: pointer;
     padding-left: 1em;
