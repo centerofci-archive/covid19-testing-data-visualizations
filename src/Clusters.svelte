@@ -11,7 +11,7 @@
   export let data = []
 
   let width = 1200
-  let height = 700
+  let height = 590
 
   const formatDate = timeFormat("%B %-d")
   const formatDay = timeFormat("%-d")
@@ -70,7 +70,7 @@
       xMid: (x1 - x0) / 2 + x0,
       yMid: yPositions[yAccessor(d)],
       y: yPositions[yAccessor(d)],
-      r: width < 600 ? 15 : 21,
+      r: width < 600 ? 15 : 19,
       color: colorAccessor(d),
     }
   }).filter(d => d && d.xMid < width)
@@ -141,161 +141,166 @@
 
 </script>
 
-<div class="c" bind:clientWidth={width}>
-  <div class="title">
-    Each circle is a specific test, processed at either <span style={`color: ${locationColors["poc"]}; font-weight: 700`}>the point of care</span> or <span style={`color: ${locationColors["centralized"]}; font-weight: 700`}>in a centralized location</span>
-  </div>
-  <!-- <div class="legend">
-    <div class="legend-item">
-      <div class="legend-item-square" style={`color: ${locationColors["poc"]}`} />
-      <div class="legend-item-label">
-        POC
-      </div>
+<div class="wrapper">
+  <div class="c" bind:clientWidth={width}>
+    <div class="title">
+      Each circle is a specific test, processed at either <span style={`color: ${locationColors["poc"]}; font-weight: 700`}>the point of care</span> or <span style={`color: ${locationColors["centralized"]}; font-weight: 700`}>in a centralized location</span>
     </div>
-    <div class="legend-item">
-      <div class="legend-item-square" style={`color: ${locationColors["centralized"]}`} />
-      <div class="legend-item-label">
-        Centralized
+    <!-- <div class="legend">
+      <div class="legend-item">
+        <div class="legend-item-square" style={`color: ${locationColors["poc"]}`} />
+        <div class="legend-item-label">
+          POC
+        </div>
       </div>
-    </div>
-  </div> -->
-  <svg {width} {height}>
-    {#each yTicks as [tick, y]}
-      <rect
-        class="tier"
-        y={y}
-        {width}
-        height={height / 3 - 20}
-      />
+      <div class="legend-item">
+        <div class="legend-item-square" style={`color: ${locationColors["centralized"]}`} />
+        <div class="legend-item-label">
+          Centralized
+        </div>
+      </div>
+    </div> -->
+    <svg {width} {height}>
+      {#each yTicks as [tick, y]}
+        <rect
+          class="tier"
+          y={y}
+          {width}
+          height={height / 3 - 20}
+        />
+        <text
+          class="y-tick"
+          x={28}
+          y={y + 23}
+        >
+          { tick }
+        </text>
+      {/each}
+      {#each xTicks as [tick, x]}
+        <text
+          class="x-tick"
+          x={x}
+          y={height + 23}
+        >
+          { tick }
+        </text>
+        <line
+          class="tick-line"
+          x1={x}
+          x2={x}
+          y1={height - 3}
+          y2={height + 3}
+        />
+      {/each}
       <text
-        class="y-tick"
-        x={28}
-        y={y + 23}
+        class="x-label"
+        x={10}
+        y={height + 6}
       >
-        { tick }
+        Processing
       </text>
-    {/each}
-    {#each xTicks as [tick, x]}
       <text
-        class="x-tick"
-        x={x}
+        class="x-label"
+        x={10}
         y={height + 23}
       >
-        { tick }
+        Time
       </text>
-      <line
-        class="tick-line"
-        x1={x}
-        x2={x}
-        y1={height - 3}
-        y2={height + 3}
-      />
-    {/each}
-    <text
-      class="x-label"
-      x={10}
-      y={height + 6}
-    >
-      Processing
-    </text>
-    <text
-      class="x-label"
-      x={10}
-      y={height + 23}
-    >
-      Time
-    </text>
-    {#each adjustedTests as test}
-      <circle
-        class="test"
-        cx={test.x}
-        cy={test.y}
-        r={test.r}
-        fill={test.color}
-        on:mouseenter={() => hoveredPoint = test}
-        on:mouseleave={() => hoveredPoint = null}
-      />
-    {/each}
-    {#each labels as { x, y, nickname }}
-      <text class="name name-bg" {x} {y}>
-        { nickname }
-        <!-- { name.split(/ /g)[0] }... -->
-      </text>
-      <text class="name" {x} {y}>
-        { nickname }
-        <!-- { name.split(/ /g)[0] }... -->
-      </text>
-    {/each}
-  </svg>
-  {#if hoveredPoint}
-    <div class="tooltip" style={`transform: translate(calc(${
-      Math.min(
-        width - 120,
-        Math.max(
-          120,
-          hoveredPoint.x,
+      {#each adjustedTests as test}
+        <circle
+          class="test"
+          cx={test.x}
+          cy={test.y}
+          r={test.r}
+          fill={test.color}
+          on:mouseenter={() => hoveredPoint = test}
+          on:mouseleave={() => hoveredPoint = null}
+        />
+      {/each}
+      {#each labels as { x, y, nickname }}
+        <text class="name name-bg" {x} {y}>
+          { nickname }
+          <!-- { name.split(/ /g)[0] }... -->
+        </text>
+        <text class="name" {x} {y}>
+          { nickname }
+          <!-- { name.split(/ /g)[0] }... -->
+        </text>
+      {/each}
+    </svg>
+    {#if hoveredPoint}
+      <div class="tooltip" style={`transform: translate(calc(${
+        Math.min(
+          width - 120,
+          Math.max(
+            120,
+            hoveredPoint.x,
+          )
         )
-      )
-    }px - 50%), calc(${
-      hoveredPoint.y
-    }px + ${
-      hoveredPoint.y < 200 ? "4em" : "-100%"
-    }))`}>
-      <h3 class="tooltip-name">
-        { hoveredPoint.name }
-      </h3>
-      <div class="summary">
-        { hoveredPoint.summary }
-      </div>
-      {#if hoveredPoint.date}
-        <h6>EUA approval date</h6>
-        <div class="date">
-          { formatDate(parseDate(hoveredPoint.date)) }<sup>{
-            getOrdinal(formatDay(+parseDate(hoveredPoint.date)))
-          }</sup>, { formatYear(parseDate(hoveredPoint.date)) }
+      }px - 50%), calc(${
+        hoveredPoint.y
+      }px + ${
+        hoveredPoint.y < 200 ? "4em" : "-100%"
+      }))`}>
+        <h3 class="tooltip-name">
+          { hoveredPoint.name }
+        </h3>
+        <div class="summary">
+          { hoveredPoint.summary }
         </div>
-      {/if}
-      {#if hoveredPoint.notes}
-        <h6>Notes</h6>
-        <div>
-          { hoveredPoint.notes }
-        </div>
-      {/if}
-      <div class="infos">
-        <div class="info">
-          <h6>Processing Time</h6>
+        {#if hoveredPoint.date}
+          <h6>EUA approval date</h6>
+          <div class="date">
+            { formatDate(parseDate(hoveredPoint.date)) }<sup>{
+              getOrdinal(formatDay(+parseDate(hoveredPoint.date)))
+            }</sup>, { formatYear(parseDate(hoveredPoint.date)) }
+          </div>
+        {/if}
+        {#if hoveredPoint.notes}
+          <h6>Notes</h6>
           <div>
-            {#if hoveredPoint.time[2]}
-              { hoveredPoint.time[2] }
-            {:else}
-              <i>no information available</i>
-            {/if}
+            { hoveredPoint.notes }
+          </div>
+        {/if}
+        <div class="infos">
+          <div class="info">
+            <h6>Processing Time</h6>
+            <div>
+              {#if hoveredPoint.time[2]}
+                { hoveredPoint.time[2] }
+              {:else}
+                <i>no information available</i>
+              {/if}
+            </div>
+          </div>
+          <div class="info cost">
+            <h6>Cost</h6>
+            <div>
+              {#if hoveredPoint.cost}
+                {#each new Array(hoveredPoint.cost || 0).fill(0) as _}
+                  $
+                {/each}
+              {/if}
+            </div>
           </div>
         </div>
-        <div class="info cost">
-          <h6>Cost</h6>
-          <div>
-            {#if hoveredPoint.cost}
-              {#each new Array(hoveredPoint.cost || 0).fill(0) as _}
-                $
-              {/each}
-            {/if}
-          </div>
-        </div>
       </div>
-    </div>
-  {/if}
+    {/if}
+  </div>
 </div>
 
 <style>
-  .c {
-    position: relative;
-    width: calc(100% - 1.5rem);
-    height: 700px;
+  .wrapper {
     margin: 1em auto;
-    /* padding-top: 3em; */
+    width: calc(100% - 1.5rem);
     margin-bottom: 6em;
     max-width: 1050px;
+  }
+  .c {
+    position: relative;
+    height: 590px;
+    width: 100%;
+    /* padding-top: 3em; */
     font-size: 0.9em;
   }
   svg {
