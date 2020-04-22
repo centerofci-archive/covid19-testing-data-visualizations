@@ -190,6 +190,9 @@
 		flex: 0 0 1rem;
 		padding: 1rem 1.6rem;
 		border-bottom: 1px solid;
+		max-width: 1050px;
+    margin: 0 auto;
+    width: 100%;
 	}
 	.title h2 {
 		margin: 0;
@@ -209,18 +212,23 @@
 		line-height: 1.3em;
 		background: #f4f4f4;
 		border-top: 1px solid;
+		max-width: 1050px;
+    margin: 0 auto;
+    width: 100%;
 	}
 
 	.test-list {
 		display: flex;
 		align-items: flex-start;
 		font-size: 0.8em;
+		margin: 0 auto;
 		/* margin-bottom: 6px; */
 		/* height: 100%; */
 		/* overflow: hidden; */
 	}
 
 	.list {
+		position: relative;
 		flex: 0 0 20em;
 		height: 100vh;
 		display: flex;
@@ -267,7 +275,7 @@
 		align-items: flex-end;
 		position: fixed;
 		bottom: 8em;
-		right: 23em;
+		right: 33em;
 		margin-bottom: 1px;
 		width: 30em;
 		max-height: 50vh;

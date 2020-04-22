@@ -169,7 +169,7 @@
       />
       <text
         class="y-tick"
-        x={16}
+        x={28}
         y={y + 23}
       >
         { tick }
@@ -295,6 +295,8 @@
     margin: 1em auto;
     /* padding-top: 3em; */
     margin-bottom: 6em;
+    max-width: 1050px;
+    font-size: 0.9em;
   }
   svg {
     overflow: visible;
@@ -374,7 +376,7 @@
     pointer-events: none;
   }
   .title {
-    padding: 0 0 0.6em 1em;
+    padding: 0 0 0.6em 1.9em;
   }
   .tooltip {
     position: absolute;
