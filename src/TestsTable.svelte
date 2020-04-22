@@ -18,7 +18,7 @@
   let sortMetric = "time"
   let isSortReversed = false
 
-  const formatDate = timeFormat("%b %d")
+  const formatDate = timeFormat("%b %-d")
   const formatDay = timeFormat("%-d")
 
   const getMetric = (d, metric) => (
@@ -117,12 +117,15 @@
         Approvals
       </div>
     </div>
-    <div class="col text med-wide">Training</div>
+    <div class="col text med-wide">
+      Training
+    </div>
   </div>
   <div class="rows">
     {#each sortedData as test, i}
       <div class="row">
         <div class="col title vert">
+          <h6 class="col-mobile-title">Test name</h6>
           <div class="name">
             { test.name }
           </div>
@@ -136,6 +139,7 @@
           {/if}
         </div>
         <div class="col small vert steps">
+          <h6 class="col-mobile-title">Methods</h6>
           {#each test.unparsedSteps as step, i}
             <div class="step">
               <span class="index">{ i + 1 }.</span> {#if step}
@@ -147,6 +151,7 @@
           {/each}
         </div>
         <div class="col sym">
+          <h6 class="col-mobile-title">Cost</h6>
           {#each new Array(test.cost).fill(0) as _}
             <Icon name="money" />
           {/each}
@@ -163,6 +168,7 @@
           />
         </div> -->
         <div class="col sym vert">
+          <h6 class="col-mobile-title">Location</h6>
           <div style={`color: ${locationColors[test.location[0]]}`}>
             <Icon name={test.location[0]} />
           </div>
@@ -171,6 +177,7 @@
           </div>
         </div>
         <div class="col text vert">
+          <h6 class="col-mobile-title">Approvals</h6>
           { test.approvals }
           <div class="note" style="white-space: nowrap">
             { formatDate(parseDate(test.date)) }<sup>{
@@ -179,6 +186,7 @@
           </div>
         </div>
         <div class="col text small med-wide">
+          <h6 class="col-mobile-title">Training</h6>
           { test.training }
         </div>
         {#if test.time[1]}
@@ -464,5 +472,39 @@
     /* border: 1px solid #6d84aa; */
     /* background-size: 70em; */
     transform: translate(0, -50%);
+  }
+  .col-mobile-title {
+    display: none;
+  }
+  @media (max-width: 1190px) {
+    .row {
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+    .col {
+      min-width: 8em;
+      flex-wrap: wrap;
+    }
+    .headers {
+      display: none;
+    }
+    .col-mobile-title {
+      display: block;
+      width: 100%;
+      padding-bottom: 0.9em;
+      font-size: 0.6rem;
+    }
+    .title {
+      width: 100%;
+      flex: 0 0 100%;
+    }
+    .steps {
+      flex: 3 0 15em;
+      min-width: 15em;
+    }
+    .time-row-label {
+      flex: 0 0 10em;
+      width: 10em;
+    }
   }
 </style>

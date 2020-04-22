@@ -5,7 +5,7 @@
   import { timeFormat } from "d3-time-format"
   import { forceSimulation, forceX, forceY, forceCollide, forceRadial } from "d3-force"
 
-  import { flatten, rectCollide } from "./utils"
+  import { flatten, getOrdinal, rectCollide } from "./utils"
   import { ordinalLevels, locationColors, parseDate } from "./data-utils"
 
   export let data = []
@@ -13,11 +13,16 @@
   let width = 1200
   let height = 700
 
+  const formatDate = timeFormat("%B %-d")
+  const formatDay = timeFormat("%-d")
+  const formatYear = timeFormat("%Y")
   const xAccessor = d => d.time[0]
   const x1Accessor = d => d.time[1]
   const yAccessor = d => d.cost
   const rAccessor = d => d.cost
   const colorAccessor = d => locationColors[d.location[0]] || "#CDCFD8"
+
+  let hoveredPoint = null
 
   $: rScale = scaleSqrt()
     .domain(extent(data, rAccessor))
@@ -65,7 +70,7 @@
       xMid: (x1 - x0) / 2 + x0,
       yMid: yPositions[yAccessor(d)],
       y: yPositions[yAccessor(d)],
-      r: 21,
+      r: width < 600 ? 15 : 21,
       color: colorAccessor(d),
     }
   }).filter(d => d && d.xMid < width)
@@ -132,6 +137,8 @@
 
   $: parsedTests, moveTests()
 
+
+
 </script>
 
 <div class="c" bind:clientWidth={width}>
@@ -189,22 +196,24 @@
       x={10}
       y={height + 6}
     >
-      Time
+      Processing
     </text>
     <text
       class="x-label"
       x={10}
       y={height + 23}
     >
-      Required
+      Time
     </text>
-    {#each adjustedTests as { x, y, r, color }}
+    {#each adjustedTests as test}
       <circle
         class="test"
-        cx={x}
-        cy={y}
-        r={r}
-        fill={color}
+        cx={test.x}
+        cy={test.y}
+        r={test.r}
+        fill={test.color}
+        on:mouseenter={() => hoveredPoint = test}
+        on:mouseleave={() => hoveredPoint = null}
       />
     {/each}
     {#each labels as { x, y, nickname }}
@@ -218,10 +227,69 @@
       </text>
     {/each}
   </svg>
+  {#if hoveredPoint}
+    <div class="tooltip" style={`transform: translate(calc(${
+      Math.min(
+        width - 120,
+        Math.max(
+          120,
+          hoveredPoint.x,
+        )
+      )
+    }px - 50%), calc(${
+      hoveredPoint.y
+    }px + ${
+      hoveredPoint.y < 200 ? "4em" : "-100%"
+    }))`}>
+      <h3 class="tooltip-name">
+        { hoveredPoint.name }
+      </h3>
+      <div class="summary">
+        { hoveredPoint.summary }
+      </div>
+      {#if hoveredPoint.date}
+        <h6>EUA approval date</h6>
+        <div class="date">
+          { formatDate(parseDate(hoveredPoint.date)) }<sup>{
+            getOrdinal(formatDay(+parseDate(hoveredPoint.date)))
+          }</sup>, { formatYear(parseDate(hoveredPoint.date)) }
+        </div>
+      {/if}
+      {#if hoveredPoint.notes}
+        <h6>Notes</h6>
+        <div>
+          { hoveredPoint.notes }
+        </div>
+      {/if}
+      <div class="infos">
+        <div class="info">
+          <h6>Processing Time</h6>
+          <div>
+            {#if hoveredPoint.time[2]}
+              { hoveredPoint.time[2] }
+            {:else}
+              <i>no information available</i>
+            {/if}
+          </div>
+        </div>
+        <div class="info cost">
+          <h6>Cost</h6>
+          <div>
+            {#if hoveredPoint.cost}
+              {#each new Array(hoveredPoint.cost || 0).fill(0) as _}
+                $
+              {/each}
+            {/if}
+          </div>
+        </div>
+      </div>
+    </div>
+  {/if}
 </div>
 
 <style>
   .c {
+    position: relative;
     width: 80%;
     height: 700px;
     margin: 1em auto;
@@ -301,8 +369,61 @@
     font-weight: 700;
     color: #787d92;
   }
+  text {
+    pointer-events: none;
+  }
   .title {
     padding: 0 0 0.6em 1em;
-
+  }
+  .tooltip {
+    position: absolute;
+    top: 4em;
+    left: 0;
+    /* width: 20em; */
+    max-width: 20em;
+    /* margin-left: -10em; */
+    /* text-align: center; */
+    background: white;
+    padding: 1em 1.3em;
+    font-size: 0.8em;
+    line-height: 1.3em;
+    box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
+    pointer-events: none;
+  }
+	.steps {
+		margin-bottom: 1.5em;
+	}
+	.step {
+		display: flex;
+		margin-bottom: 0.6em;
+	}
+	.step-index {
+    margin-left: 0;
+		margin-right: 0.6em;
+    opacity: 0.5;
+	}
+  h3 {
+    margin-top: 0;
+    margin-bottom: 0.3em;
+    font-weight: 800;
+  }
+	i {
+		font-style: italic;
+		opacity: 0.6;
+	}
+  h6 {
+    margin-top: 1.6em;
+    margin-bottom: 0.3em;
+  }
+  .summary {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+  .infos {
+    display: flex;
+    justify-content: space-between;
+  }
+  .cost {
+    text-align: right;
   }
 </style>

@@ -48,6 +48,8 @@
 				const parsedData = res.map(d => ({
 					// ...d,
 					name: d["Feature Name"],
+					description: d["Descriptive Blurb"],
+					links: d["Authoritative Links"],
 					stepIndex: steps.indexOf(d["Step"]),
 					time: parseTime(d["Time"]),
 					cost: getOrdinalLevel(d["Cost"]),
@@ -107,6 +109,10 @@
 
 	{#if sections.includes("steps")}
 		<div class="test-list">
+			<div class="steps">
+				<Steps {methods} {missingMethods} {activeSteps} />
+			</div>
+
 			<div class="list">
 				<div class="tests">
 					{#each tests as test}
@@ -132,12 +138,13 @@
 								</div>
 							</div>
 						</h3>
-						{#if activeTest.date}
-							<div class="date">{ formatDate(parseDate(activeTest.date)) }</div>
-						{/if}
 						<p>
 							{ activeTest.summary }
 						</p>
+						{#if activeTest.date}
+							<h6>EUA Approval Date</h6>
+							<div class="date">{ formatDate(parseDate(activeTest.date)) }</div>
+						{/if}
 						{#if activeTest.notes}
 							<h6>Notes</h6>
 							<p>
@@ -173,9 +180,6 @@
 				{/if}
 			</div>
 
-			<div class="steps">
-				<Steps {methods} {missingMethods} {activeSteps} />
-			</div>
 		</div>
 	{/if}
 
@@ -201,7 +205,7 @@
 	.test-list {
 		display: flex;
 		align-items: flex-start;
-		margin-bottom: 6px;
+		/* margin-bottom: 6px; */
 		/* height: 100%; */
 		/* overflow: hidden; */
 	}
@@ -236,11 +240,19 @@
 		/* position: sticky; */
 		/* top: 0; */
     align-self: flex-start;
-		padding: 0 3em;
+		/* padding: 0 3em; */
+
+		max-width: 96%;
+    max-height: 100vh;
+    overflow: auto;
 	}
 	.test-info {
+		position: fixed;
+		bottom: 2em;
+		right: 2em;
 		margin-bottom: 1px;
-		width: 100%;
+		max-width: 30em;
+		max-height: 20em;
 		height: 40em;
 		padding: 0.6rem 1.6rem;
 		background: #3A3253;
@@ -264,7 +276,7 @@
 		margin: 0;
 		padding: 0.3em 0 1.6em;
 	}
-	.steps {
+	.test-info .steps {
 		margin-bottom: 1.5em;
 	}
 	.step {
