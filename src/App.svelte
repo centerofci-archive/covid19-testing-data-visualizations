@@ -288,6 +288,9 @@
 		.test-list {
 			width: 100%;
 		}
+		.tests {
+			padding-left: 0;
+		}
 		.test-info {
 			display: none;
 		}
