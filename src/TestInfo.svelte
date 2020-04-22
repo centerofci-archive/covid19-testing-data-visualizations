@@ -75,6 +75,7 @@
 <style>
 	.test-info {
     position: relative;
+    width: 100%;
 		padding: 1rem 1.6rem 3em;
 		background: #E1DCE4;
 		/* color: #E1DCE4; */

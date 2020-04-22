@@ -322,7 +322,6 @@
     white-space: nowrap;
     /* transform: translateX(100%); */
     opacity: 0;
-    overflow: hidden;
   }
   .step-option:hover .bar-label {
     opacity: 0;
@@ -410,6 +409,9 @@
     }
     .c {
       padding-top: 0;
+    }
+    .bar-value {
+      overflow: hidden;
     }
   }
 </style>
