@@ -23,6 +23,16 @@ Navigate to [localhost:5000](http://localhost:5000). You should see your app run
 By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
 
 
+## Finding your way around
+
+The App component is the main director here. It populates the `sections` variable by looking for a `section` url parameter. For example, the tests table lives at:
+https://centerofci.github.io/covid19-testing-data-visualizations/?section=table
+
+App also loads live data from the first two sheets in this Google Sheet:
+https://docs.google.com/spreadsheets/d/1RLqXkzxKFItUN3abevxyXlvITqo0CpSKRgjW2o2o98M/edit
+and performs a bit of data cleanup, in the onMount function.
+
+
 ## Building production mode and deploying
 
 To create an optimised version of the app:
