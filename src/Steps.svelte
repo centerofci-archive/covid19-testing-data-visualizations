@@ -237,7 +237,7 @@
     margin-top: 0.6em;
     margin-left: -1em;
     padding: 1em;
-    font-size: 0.8em;
+    font-size: 0.9em;
     font-weight: 400;
     line-height: 1.3em;
     z-index: 100;

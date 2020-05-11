@@ -230,7 +230,7 @@
 	.list {
 		position: relative;
 		flex: 0 0 20em;
-		height: 100vh;
+		height: 100%;
 		display: flex;
 		width: 20em;
 		flex-direction: column;
