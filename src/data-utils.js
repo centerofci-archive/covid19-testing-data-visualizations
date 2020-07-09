@@ -1,12 +1,13 @@
 import { timeFormat, timeParse } from "d3-time-format"
 
 const sheetId = "1RLqXkzxKFItUN3abevxyXlvITqo0CpSKRgjW2o2o98M"
-export const testUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?${[
+const corsBase = "https://cors-anywhere.herokuapp.com/"
+export const testUrl = `${corsBase}https://docs.google.com/spreadsheets/d/${sheetId}/export?${[
   "format=csv",
   `gid=0`,
   `range=A2:Z`,
   ].join("&")}`
-export const methodsUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?${[
+export const methodsUrl = `${corsBase}https://docs.google.com/spreadsheets/d/${sheetId}/export?${[
   "format=csv",
   `gid=773065572`,
   `range=A2:Z`,
