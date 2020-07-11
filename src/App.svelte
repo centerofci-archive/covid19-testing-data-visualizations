@@ -1,8 +1,7 @@
 <script>
 	import { onMount } from 'svelte'
-	import { csv } from "d3-fetch"
 
-	import { context, testUrl, methodsUrl, getNickname, steps, parseStep, parseTime, getOrdinalLevel, ordinalLevels, parseLocation,parseDate, formatDate } from "./data-utils"
+	import { context, grabCsv, corsBase, testUrl, methodsUrl, getNickname, steps, parseStep, parseTime, getOrdinalLevel, ordinalLevels, parseLocation, parseDate, formatDate } from "./data-utils"
 	import { flatten, getUrlParams } from "./utils"
 	import Icon from "./Icon.svelte"
 	import Steps from "./Steps.svelte"
@@ -19,59 +18,53 @@
 	let title = null
 	let caption = null
 
-	onMount(() => {
+	onMount(async () => {
 		const urlParams = getUrlParams()
 		sections = urlParams["section"] ? urlParams["section"].split(",") : ["steps"]
 		const contextData = sections.length > 1 ? {} : context[sections[0]] || {}
 		title = contextData.title
 		caption = contextData.caption
 
+		let testResponse = await grabCsv(testUrl)
+		tests = testResponse.map(d => ({
+			// ...d,
+			name: d["Test Name"],
+			nickname: getNickname(d["Test Name"]),
+			date: d["Date of EUA"],
+			summary: d["Diagnostic Summary"],
+			time: parseTime(d["Time (Estimated)"]),
+			cost: getOrdinalLevel(d["Cost"]),
+			location: parseLocation(d["Centralized/POC"]),
+			approvals: d["Approvals"],
+			training: d["Training Requirements"],
+			notes: d["Notes"],
+			steps: steps.map((stepName, i) => (
+				parseStep(d[stepName], i)
+			)),
+			unparsedSteps: steps.map((stepName, i) => (
+				d[stepName]
+			)),
+		})).sort((a,b) => parseDate(b.date) - parseDate(a.date))
+		// console.log(testResponse, tests)
 
-		csv(testUrl)
-			.then(res => {
-				const parsedData = res.map(d => ({
-					// ...d,
-					name: d["Test Name"],
-					nickname: getNickname(d["Test Name"]),
-					date: d["Date of EUA"],
-					summary: d["Diagnostic Summary"],
-					time: parseTime(d["Time (Estimated)"]),
-					cost: getOrdinalLevel(d["Cost"]),
-					location: parseLocation(d["Centralized/POC"]),
-					approvals: d["Approvals"],
-					training: d["Training Requirements"],
-					notes: d["Notes"],
-					steps: steps.map((stepName, i) => (
-						parseStep(d[stepName], i)
-					)),
-					unparsedSteps: steps.map((stepName, i) => (
-						d[stepName]
-					)),
-				})).sort((a,b) => parseDate(b.date) - parseDate(a.date))
-				tests = parsedData
-				console.log(res, tests)
-			})
-		csv(methodsUrl)
-			.then(res => {
-				const parsedData = res.map(d => ({
-					// ...d,
-					name: d["Feature Name"],
-					description: d["Descriptive Blurb"],
-					links: d["Authoritative Links"],
-					stepIndex: steps.indexOf(d["Step"]),
-					time: parseTime(d["Time"]),
-					cost: getOrdinalLevel(d["Cost"]),
-					sensitivity: getOrdinalLevel(d["Sensitivity"]),
-					location: d["Centralized/POC"] == "-" ? null : d["Centralized/POC"],
-					approvals: d["Approvals"],
-					training: d["Training Requirements"] == "no",
-					equipment: d["Equipment Requirements"],
-					otherSteps: d["Required other steps"],
-					notes: d["Notes"],
-				}))
-				methods = parsedData
-				console.log(res, methods)
-			})
+		let methodsResponse = await grabCsv(methodsUrl)
+		methods = methodsResponse.map(d => ({
+			// ...d,
+			name: d["Feature Name"],
+			description: d["Descriptive Blurb"],
+			links: d["Authoritative Links"],
+			stepIndex: steps.indexOf(d["Step"]),
+			time: parseTime(d["Time"]),
+			cost: getOrdinalLevel(d["Cost"]),
+			sensitivity: getOrdinalLevel(d["Sensitivity"]),
+			location: d["Centralized/POC"] == "-" ? null : d["Centralized/POC"],
+			approvals: d["Approvals"],
+			training: d["Training Requirements"] == "no",
+			equipment: d["Equipment Requirements"],
+			otherSteps: d["Required other steps"],
+			notes: d["Notes"],
+		}))
+		// console.log(methodsResponse, methods)
 	})
 
 	const updateMethods = () => {

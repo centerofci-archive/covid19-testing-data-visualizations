@@ -1,16 +1,19 @@
+import { csv } from "d3-fetch"
 import { timeFormat, timeParse } from "d3-time-format"
 
 const sheetId = "1RLqXkzxKFItUN3abevxyXlvITqo0CpSKRgjW2o2o98M"
-const corsBase = "https://cors-anywhere.herokuapp.com/"
-export const testUrl = `${corsBase}https://docs.google.com/spreadsheets/d/${sheetId}/export?${[
+export const corsBase = "https://cors-anywhere.herokuapp.com/"
+export const testUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?${[
   "format=csv",
   `gid=0`,
   `range=A2:Z`,
+  `callback=googleDocCallback`
   ].join("&")}`
-export const methodsUrl = `${corsBase}https://docs.google.com/spreadsheets/d/${sheetId}/export?${[
+export const methodsUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?${[
   "format=csv",
   `gid=773065572`,
   `range=A2:Z`,
+  `callback=googleDocCallback`
   ].join("&")}`
 export const steps = [
   "Sampling",
@@ -143,4 +146,20 @@ export const context = {
     title: "Scatter Plot of Relative Cost Versus Processing Time",
     caption: "Each test is plotted as a function of its relative cost and processing time. Scalability and sensitivity of each test, which are difficult to estimate and not shown here,  are two complex metrics influenced by the technique of sampling, transporting of specimen collections to centralized labs, and other factors. ",
   },
+}
+
+
+export const grabCsv = async url => {
+  try {
+    const response = await csv(url)
+    return response
+  } catch(e) {
+    try {
+      console.log(`something went wrong with fetching from ${url}, trying with CORS base`, e)
+      const response = await csv(corsBase + url)
+      return response
+    } catch(e) {
+      console.log(`something went wrong with fetching from ${url}`, e)
+    }
+  }
 }
