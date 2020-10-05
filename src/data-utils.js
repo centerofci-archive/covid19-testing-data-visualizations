@@ -146,20 +146,25 @@ export const context = {
     title: "Scatter Plot of Relative Cost Versus Processing Time",
     caption: "Each test is plotted as a function of its relative cost and processing time. Scalability and sensitivity of each test, which are difficult to estimate and not shown here,  are two complex metrics influenced by the technique of sampling, transporting of specimen collections to centralized labs, and other factors. ",
   },
+  lod: {
+    title: "FDA COVID-19 EUA Test LoD Explorer",
+    caption: "The FDA has been issuing Emergency Use Authorizations (EUA) for COVID-19 infection diagnostic tests. In this explorer, we break down and explore each EUA test in relation to the Limit of Detection (LoD) reported in the EUA, in comparison to the LoD as assessed using the FDAs reference panel material.",
+  },
 }
 
 
 export const grabCsv = async url => {
+  const fallback_url = corsBase + url
   try {
     const response = await csv(url)
     return response
   } catch(e) {
     try {
       console.log(`something went wrong with fetching from ${url}, trying with CORS base`, e)
-      const response = await csv(corsBase + url)
+      const response = await csv(fallback_url)
       return response
     } catch(e) {
-      console.log(`something went wrong with fetching from ${url}`, e)
+      console.log(`something went wrong with fallback fetching from ${fallback_url}`, e)
     }
   }
 }
