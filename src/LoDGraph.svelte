@@ -144,13 +144,13 @@
         cx={test.x}
         cy={test.y_min}
         r={point_radius}
-        fill={"rgba(160, 160, 255, 0.8)"}
+        fill={"rgba(200, 200, 200, 0.8)"}
         on:mouseenter={() => hoveredPoint = test}
         on:mouseleave={() => hoveredPoint = null}
       />
       <polygon
         class="test-uncertainty test"
-        fill={"rgba(160, 160, 255, 0.8)"}
+        fill={"rgba(200, 200, 200, 0.8)"}
         points={`
         ${test.x},${test.y_min + point_radius}
         ${test.x - uncertainty_x},${test.y_min}
@@ -297,7 +297,7 @@
     pointer-events: none;
   }
   .stop1 { stop-color: #fff; stop-opacity: 0; }
-  .stop2 { stop-color: #4f6; stop-opacity: 0.6; }
+  .stop2 { stop-color: #4ef; stop-opacity: 0.6; }
   .stop3 { stop-color: #fff; stop-opacity: 0; }
 
   svg {
@@ -314,6 +314,7 @@
   }
   .test-uncertainty {
     pointer-events: none;
+    display: none;
   }
   text {
     text-anchor: middle;
