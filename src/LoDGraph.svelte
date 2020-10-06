@@ -5,6 +5,7 @@
 
 	import Icon from "./Icon.svelte"
   import { steps, ordinalLevels } from "./data-utils"
+  import { compute_intercept_with_bounding_rect, scale_line } from "./graph_lines"
   import {
     combined_data,
     min_x_tidy,
@@ -56,6 +57,22 @@
     [max_y.toString(), y_scale(max_y)],
   ]
 
+  let equivalence_line = compute_intercept_with_bounding_rect(0, min_x, max_x, min_y, max_y)
+  if (equivalence_line) equivalence_line = scale_line(equivalence_line, x_scale, y_scale)
+
+  const margin = 4
+  let under_report_sensitivity_line = compute_intercept_with_bounding_rect(margin, min_x, max_x, min_y, max_y)
+  if (under_report_sensitivity_line)
+  {
+    under_report_sensitivity_line = scale_line(under_report_sensitivity_line, x_scale, y_scale)
+  }
+
+  let over_report_sensitivity_line = compute_intercept_with_bounding_rect(-margin, min_x, max_x, min_y, max_y)
+  if (over_report_sensitivity_line)
+  {
+    over_report_sensitivity_line = scale_line(over_report_sensitivity_line, x_scale, y_scale)
+  }
+
   let hoveredPoint = null
 
   function display_lod (lod)
@@ -70,7 +87,7 @@
     {#each y_ticks as [tick, y]}
       <text
         class="y-tick"
-        x={-25}
+        x={-16}
         y={y + 5}
       >
         { tick }
@@ -100,6 +117,7 @@
         y2={height + 6}
       />
     {/each}
+
     {#each scaled_test_data as test}
       <circle
         class="test"
@@ -111,6 +129,48 @@
         on:mouseleave={() => hoveredPoint = null}
       />
     {/each}
+
+    {#if equivalence_line}
+      <line
+        class="equivalence-line"
+        x1={equivalence_line.x1}
+        y1={equivalence_line.y1}
+        x2={equivalence_line.x2}
+        y2={equivalence_line.y2}
+      />
+    {/if}
+
+    {#if under_report_sensitivity_line}
+      <line
+        class="equivalence-line"
+        x1={under_report_sensitivity_line.x1}
+        y1={under_report_sensitivity_line.y1}
+        x2={under_report_sensitivity_line.x2}
+        y2={under_report_sensitivity_line.y2}
+      />
+    {/if}
+
+    {#if over_report_sensitivity_line}
+      <line
+        class="equivalence-line"
+        x1={over_report_sensitivity_line.x1}
+        y1={over_report_sensitivity_line.y1}
+        x2={over_report_sensitivity_line.x2}
+        y2={over_report_sensitivity_line.y2}
+      />
+    {/if}
+
+    <defs>
+      <linearGradient id="Gradient1" x1="0.5" x2="1" y1="0.5" y2="1" gradientTransform="rotate(0)">
+        <stop class="stop1" offset="0%"/>
+        <stop class="stop2" offset="50%"/>
+        <stop class="stop3" offset="100%"/>
+      </linearGradient>
+    </defs>
+
+    <polygon id="polygon" points={`0,${height} ${width},0 ${width},${height} 0,${height}`}></polygon>
+
+    <!-- <rect id="rect1" x="10" y={height} width={width} height={height/2} transform="rotate(-35)"/> -->
   </svg>
 
   {#if hoveredPoint}
@@ -199,22 +259,11 @@
 </div>
 
 <style>
-  .wrapper {
-    margin: 1em auto;
-    width: calc(100% - 1.5rem);
-    margin-bottom: 6em;
-    max-width: 1050px;
-  }
-  .c {
-    position: relative;
-    height: 590px;
-    width: 100%;
-    /* padding-top: 3em; */
-    font-size: 0.9em;
-  }
-  .chart {
-    position: relative;
-  }
+  #polygon { fill: url(#Gradient1); }
+  .stop1 { stop-color: green; }
+  .stop2 { stop-color: white; stop-opacity: 0; }
+  .stop3 { stop-color: red; }
+
   svg {
     overflow: visible;
     margin: 100px;
@@ -233,69 +282,29 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
-  .y-tick {
-    text-anchor: start;
-    font-weight: 700;
-    fill: #787d92;
-  }
-  .x-label {
-    text-anchor: start;
-    font-size: 0.8em;
-    font-weight: 700;
-    fill: #787d92;
-  }
+
   .x-tick, .y-tick {
     font-size: 0.8em;
     font-weight: 700;
     fill: #787d92;
   }
+  .y-tick {
+    text-anchor: end;
+  }
   .tick-line {
     stroke: #787d92;
     stroke-width: 1;
   }
-  .name-bg {
-    stroke: #f4f4f4;
-    stroke-width: 2;
-    mix-blend-mode: soft-light;
+
+  .equivalence-line {
+    stroke: #787d92;
+    stroke-width: 1;
   }
-  .name {
-    font-size: 0.8em;
-    font-weight: 600;
-    text-anchor: start;
-    /* shape-rendering: crispEdges; */
-  }
-  .tier {
-    pointer-events: none;
-    fill: #f4f4f4;
-  }
-  .legend {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.3em;
-  }
-  .legend-item {
-    flex: none;
-    display: flex;
-    align-items: center;
-    margin-left: 1em;
-  }
-  .legend-item-square {
-    height: 0.9em;
-    width: 0.9em;
-    background: currentColor;
-  }
-  .legend-item-label {
-    margin-left: 0.4em;
-    font-size: 0.9em;
-    font-weight: 700;
-    color: #787d92;
-  }
+
   text {
     pointer-events: none;
   }
-  .title {
-    padding: 0 0 0.6em 1.9em;
-  }
+
   .tooltip {
     position: absolute;
     top: -2em;
@@ -311,27 +320,13 @@
     box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
     pointer-events: none;
   }
-	.steps {
-		margin-bottom: 1.5em;
-	}
-	.step {
-		display: flex;
-		margin-bottom: 0.6em;
-	}
-	.step-index {
-    margin-left: 0;
-		margin-right: 0.6em;
-    opacity: 0.5;
-	}
+
   h3 {
     margin-top: 0;
     margin-bottom: 0.3em;
     font-weight: 800;
   }
-	i {
-		font-style: italic;
-		opacity: 0.6;
-	}
+
   h6 {
     margin-top: 1.6em;
     margin-bottom: 0.3em;
@@ -339,12 +334,5 @@
   .summary {
     margin-top: 1em;
     margin-bottom: 1em;
-  }
-  .infos {
-    display: flex;
-    justify-content: space-between;
-  }
-  .cost {
-    text-align: right;
   }
 </style>
