@@ -148,7 +148,7 @@ export const context = {
   },
   lod: {
     title: "FDA COVID-19 EUA Test LoD Explorer",
-    caption: "The FDA has been issuing Emergency Use Authorizations (EUA) for COVID-19 infection diagnostic tests. In this explorer, we break down and explore each EUA test in relation to the Limit of Detection (LoD) reported in the EUA, in comparison to the LoD as assessed using the FDAs reference panel material.",
+    caption: "The FDA has been issuing Emergency Use Authorizations (EUA) for COVID-19 infection diagnostic tests. In this explorer, we break down and explore each EUA test in relation to the Limit of Detection (LoD) reported in the EUA using their stated reference material, in comparison to the LoD as assessed by the manufacturer using the FDAs reference panel material.",
   },
 }
 

@@ -80,10 +80,30 @@
     return parseFloat(lod.toPrecision(3))
   }
 
+  const point_radius = 5
+  const uncertainty_x = 50
+
 </script>
 
 <div>
   <svg {width} {height}>
+    <defs>
+      <linearGradient id="Gradient1" x1="0" x2="1" y1="0" y2="1" gradientTransform="rotate(0)">
+        <stop class="stop1" offset="25%"/>
+        <stop class="stop2" offset="50%"/>
+        <stop class="stop3" offset="75%"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <linearGradient id="Gradient2" x1="0" x2="1" y1="0" y2="1" gradientTransform="rotate(0)">
+        <stop class="stop1" offset="35%"/>
+        <stop class="stop2" offset="50%"/>
+        <stop class="stop3" offset="65%"/>
+      </linearGradient>
+    </defs>
+
+    <rect id="polygon" x="0" y="0" width={width} height={height}></rect>
+
     {#each y_ticks as [tick, y]}
       <text
         class="y-tick"
@@ -123,11 +143,20 @@
         class="test"
         cx={test.x}
         cy={test.y_min}
-        r={5}
-        fill={"rgba(200, 50, 255, 0.8)"}
+        r={point_radius}
+        fill={"rgba(160, 160, 255, 0.8)"}
         on:mouseenter={() => hoveredPoint = test}
         on:mouseleave={() => hoveredPoint = null}
       />
+      <polygon
+        class="test-uncertainty test"
+        fill={"rgba(160, 160, 255, 0.8)"}
+        points={`
+        ${test.x},${test.y_min + point_radius}
+        ${test.x - uncertainty_x},${test.y_min}
+        ${test.x},${test.y_min - point_radius}
+        ${test.x},${test.y_min + point_radius}`}
+      ></polygon>
     {/each}
 
     {#if equivalence_line}
@@ -159,18 +188,6 @@
         y2={over_report_sensitivity_line.y2}
       />
     {/if}
-
-    <defs>
-      <linearGradient id="Gradient1" x1="0.5" x2="1" y1="0.5" y2="1" gradientTransform="rotate(0)">
-        <stop class="stop1" offset="0%"/>
-        <stop class="stop2" offset="50%"/>
-        <stop class="stop3" offset="100%"/>
-      </linearGradient>
-    </defs>
-
-    <polygon id="polygon" points={`0,${height} ${width},0 ${width},${height} 0,${height}`}></polygon>
-
-    <!-- <rect id="rect1" x="10" y={height} width={width} height={height/2} transform="rotate(-35)"/> -->
   </svg>
 
   {#if hoveredPoint}
@@ -179,7 +196,7 @@
         width - 120,
         Math.max(
           120,
-          hoveredPoint.x,
+          hoveredPoint.x - 40,
         )
       )
     }px - 50%), calc(${
@@ -259,10 +276,29 @@
 </div>
 
 <style>
-  #polygon { fill: url(#Gradient1); }
-  .stop1 { stop-color: green; }
-  .stop2 { stop-color: white; stop-opacity: 0; }
-  .stop3 { stop-color: red; }
+  #polygon {
+    fill: url(#Gradient1);
+    pointer-events: none;
+  }
+  .stop1 { stop-color: #ecc; stop-opacity: 1; }
+  .stop2 { stop-color: white; stop-opacity: 1; }
+  .stop3 { stop-color: #ecc; stop-opacity: 1; }
+
+  #polygon {
+    fill: url(#Gradient2);
+    pointer-events: none;
+  }
+  .stop1 { stop-color: #ecc; stop-opacity: 1; }
+  .stop2 { stop-color: green; stop-opacity: 0.5; }
+  .stop3 { stop-color: #ecc; stop-opacity: 1; }
+
+  #polygon {
+    fill: url(#Gradient2);
+    pointer-events: none;
+  }
+  .stop1 { stop-color: #fff; stop-opacity: 0; }
+  .stop2 { stop-color: #4f6; stop-opacity: 0.6; }
+  .stop3 { stop-color: #fff; stop-opacity: 0; }
 
   svg {
     overflow: visible;
@@ -275,6 +311,9 @@
     /* fill-opacity: 0.6; */
     mix-blend-mode: multiply;
     stroke-linecap: round;
+  }
+  .test-uncertainty {
+    pointer-events: none;
   }
   text {
     text-anchor: middle;
