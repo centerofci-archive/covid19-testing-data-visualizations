@@ -57,8 +57,9 @@ const combined_data = processed_FDA_reference_panel_LoD_data.map(d => {
   const own_LoD_min = test_EUA_data.lod_min * 1000
   const own_LoD_max = test_EUA_data.lod_max * 1000
 
-  const y_min = Math.log(own_LoD_min)
-  const y_max = Math.log(own_LoD_max)
+  const x = Math.log10(d.LoD)
+  const y_min = Math.log10(own_LoD_min)
+  const y_max = Math.log10(own_LoD_max)
 
   return {
     developer_name: d.developer_name,
@@ -67,11 +68,14 @@ const combined_data = processed_FDA_reference_panel_LoD_data.map(d => {
     ref_panel_LoD: d.LoD,
     own_LoD_min,
     own_LoD_max,
+    own_LoD_units: test_EUA_data.lod_units,
     min_max_diff: own_LoD_min !== own_LoD_max,
-    x: Math.log(d.LoD),
+    x,
     y_min,
     y_max,
     sample_media_type: d.sample_media_type,
+    synthetic_specimen__viral_material: test_EUA_data.synthetic_specimen__viral_material,
+    naked_RNA: test_EUA_data.synthetic_specimen__viral_material.includes("Naked RNA"),
   }
 })
 .filter(d => !!d)
