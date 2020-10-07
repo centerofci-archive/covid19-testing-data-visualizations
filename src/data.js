@@ -1,5 +1,5 @@
 import { FDA_reference_panel_LoD_data } from "./data_FDA_reference_panel_LoD"
-import { FDA_EUA_LoD_data } from "./data_FDA_EUA_LoD"
+import { FDA_EUAs_data } from "./data_FDA_EUAs"
 import { test_name_FDA_ref_panel_to_EUA_mapping } from "./data_FDA_test_name_mapping"
 
 
@@ -25,7 +25,7 @@ const processed_FDA_reference_panel_LoD_data = transform_FDA_LoD(filter_FDA_LoD(
 
 //
 
-const FDA_EUA_LoD_data_by_name = FDA_EUA_LoD_data.reduce((accum, test) =>
+const FDA_EUAs_data_by_name = FDA_EUAs_data.reduce((accum, test) =>
   {
     if (accum[test.test_name])
     {
@@ -35,22 +35,21 @@ const FDA_EUA_LoD_data_by_name = FDA_EUA_LoD_data.reduce((accum, test) =>
     accum[test.test_name] = test
     return accum
   }, {})
-window.FDA_EUA_LoD_data_by_name = FDA_EUA_LoD_data_by_name
 
 //
 
 const combined_data = processed_FDA_reference_panel_LoD_data.map(d => {
-  let test_EUA_data = FDA_EUA_LoD_data_by_name[d.test_name]
+  let test_EUA_data = FDA_EUAs_data_by_name[d.test_name]
 
   if (!test_EUA_data)
   {
     const mapped_name = test_name_FDA_ref_panel_to_EUA_mapping[d.test_name]
-    test_EUA_data = FDA_EUA_LoD_data_by_name[mapped_name]
+    test_EUA_data = FDA_EUAs_data_by_name[mapped_name]
   }
 
   if (!test_EUA_data)
   {
-    console.error(`No test named: "${d.test_name}" from "${d.developer_name}" in FDA_EUA_LoD_data_by_name (window.FDA_EUA_LoD_data_by_name)`)
+    console.error(`No test named: "${d.test_name}" from "${d.developer_name}" in FDA_EUAs_data_by_name (window.FDA_EUAs_data_by_name)`)
     return false
   }
 

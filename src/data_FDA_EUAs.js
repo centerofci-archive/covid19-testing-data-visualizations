@@ -1,5 +1,5 @@
 
-export const FDA_EUA_LoD_data = [
+export const FDA_EUAs_data = [
   {
     "test_id": "CDC 2019-Novel Coronavirus (2019-nCoV) Real-Time RT-PCR Diagnostic Panel",
     "developer_name": "CDC",
