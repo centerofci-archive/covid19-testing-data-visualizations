@@ -93,8 +93,7 @@
         <stop class="stop2" offset="50%"/>
         <stop class="stop3" offset="75%"/>
       </linearGradient>
-    </defs>
-    <defs>
+
       <linearGradient id="Gradient2" x1="0" x2="1" y1="0" y2="1" gradientTransform="rotate(0)">
         <stop class="stop1" offset="35%"/>
         <stop class="stop2" offset="50%"/>
@@ -144,7 +143,7 @@
         cx={test.x}
         cy={test.y_min}
         r={point_radius}
-        fill={"rgba(200, 200, 200, 0.8)"}
+        fill={test.naked_RNA ? "rgba(255, 100, 100, 0.8)" : "rgba(200, 200, 200, 0.8)"}
         on:mouseenter={() => hoveredPoint = test}
         on:mouseleave={() => hoveredPoint = null}
       />
@@ -228,15 +227,15 @@
               <td>NDU / mL</td>
             </tr>
             <tr>
-              <td></td>
+              <td>{hoveredPoint.synthetic_specimen__viral_material}</td>
               <td>{display_lod(hoveredPoint.own_LoD_min)}{hoveredPoint.min_max_diff ? " (min)" : ""}</td>
-              <td>genomic copies / mL</td>
+              <td>{hoveredPoint.own_LoD_units}</td>
             </tr>
             {#if (hoveredPoint.min_max_diff)}
             <tr>
               <td></td>
               <td>{display_lod(hoveredPoint.own_LoD_max)} (max)</td>
-              <td>genomic copies / mL</td>
+              <td></td>
             </tr>
             {/if}
           </tbody>
