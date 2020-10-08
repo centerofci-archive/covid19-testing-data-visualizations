@@ -6,7 +6,7 @@ export const FDA_EUAs_data = [
     "test_name": "CDC 2019-Novel Coronavirus (2019-nCoV) Real-Time RT-PCR Diagnostic Panel",
     "lod_min": 1,
     "lod_max": 3.162,
-    "lod_units": "RNA copies / μL",
+    "lod_units": "genome copies / μL",
     "synthetic_specimen__viral_material": [
       "Naked RNA"
     ]
@@ -137,9 +137,9 @@ export const FDA_EUAs_data = [
     "test_id": "Xpert Xpress SARS-CoV-2 test",
     "developer_name": "Cepheid",
     "test_name": "Xpert Xpress SARS-CoV-2 test",
-    "lod_min": 0.005,
-    "lod_max": 0.02,
-    "lod_units": "PFU / mL",
+    "lod_min": 5,
+    "lod_max": 20,
+    "lod_units": "PFU / μL",
     "synthetic_specimen__viral_material": [
       "Live Virus"
     ]
@@ -466,9 +466,9 @@ export const FDA_EUAs_data = [
     "test_id": "RealStar SARS-CoV02 RT-PCR Kits U.S.",
     "developer_name": "altona Diagnostics GmbH",
     "test_name": "RealStar SARS-CoV02 RT-PCR Kits U.S.",
-    "lod_min": 0.1,
-    "lod_max": 0.1,
-    "lod_units": "PFU / mL",
+    "lod_min": 100,
+    "lod_max": 100,
+    "lod_units": "PFU / μL",
     "synthetic_specimen__viral_material": [
       "Inactivated Virus (Heat)"
     ]

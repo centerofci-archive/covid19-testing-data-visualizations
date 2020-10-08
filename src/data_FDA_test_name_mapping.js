@@ -10,6 +10,7 @@
 
 export const test_name_FDA_EUA_to_ref_panel_mapping = {
   "Abbott Real Time SARS-CoV-2 assay": "Abbott RealTime SARS-CoV-2 assay",
+  "CDC 2019-Novel Coronavirus (2019-nCoV) Real-Time RT-PCR Diagnostic Panel": "CDC 2019-nCoV Real-Time RT-PCR Diagnostic Panel (CDC)",
 }
 
 export const test_name_FDA_ref_panel_to_EUA_mapping = Object.keys(test_name_FDA_EUA_to_ref_panel_mapping)
