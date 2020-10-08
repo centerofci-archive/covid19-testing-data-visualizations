@@ -1,13 +1,9 @@
 <script>
-  import { flip } from "svelte/animate"
   import { scaleLinear } from "d3-scale"
-  import { extent } from "d3-array"
 
-	import Icon from "./Icon.svelte"
-  import { steps, ordinalLevels } from "./data-utils"
   import { compute_intercept_with_bounding_rect, scale_line } from "./graph_lines"
   import {
-    combined_data,
+    filtered_combined_data,
     min_x_tidy,
     max_x_tidy,
     min_y_tidy,
@@ -34,12 +30,31 @@
     .domain([min_y, max_y])
     .range([height, 0])
 
-  const scaled_test_data = combined_data.map(d => ({
-    ...d,
-    x: x_scale(d.x),
-    y_min: y_scale(d.y_min),
-    y_max: y_scale(d.y_max),
-  }))
+
+  const test_coords = new Set()
+  const scaled_test_data = filtered_combined_data.map(d => {
+    const test = {
+      ...d,
+      x: x_scale(d.x),
+      y_min: y_scale(d.y_min),
+      y_max: y_scale(d.y_max),
+      fill_colour: d.naked_RNA ? "rgba(255, 100, 100, 0.8)"
+        : (d.synthetic_viral_particles ? "rgba(100, 255, 100, 0.8)"
+        : (d.live_virus ? "rgba(100, 100, 255, 0.8)"
+        : (d.inactivated_virus ? "rgba(240, 240, 0, 0.8)"
+        : "rgba(200, 200, 200, 0.8)")))
+    }
+
+    let test_coord = `${test.x},${test.y_min}`
+    while (test_coords.has(test_coord))
+    {
+      test.x += 2 // shift it to plot differently from other coords
+      test_coord = `${test.x},${test.y_min}`
+    }
+    test_coords.add(test_coord)
+
+    return test
+  })
 
   const x_range_3 = Math.round((max_x - min_x) / 3)
   const x_ticks = [
@@ -143,7 +158,7 @@
         cx={test.x}
         cy={test.y_min}
         r={point_radius}
-        fill={test.naked_RNA ? "rgba(255, 100, 100, 0.8)" : "rgba(200, 200, 200, 0.8)"}
+        fill={test.fill_colour}
         on:mouseenter={() => hoveredPoint = test}
         on:mouseleave={() => hoveredPoint = null}
       />
