@@ -16,7 +16,7 @@
   const min = Math.min(min_x_tidy, min_y_tidy)
   const max = Math.max(max_x_tidy, max_y_tidy)
 
-  const same_scale = true
+  const same_scale = false
   const min_x = same_scale ? min : min_x_tidy
   const max_x = same_scale ? max : max_x_tidy
   const min_y = same_scale ? min : min_y_tidy
@@ -72,20 +72,22 @@
     [max_y.toString(), y_scale(max_y)],
   ]
 
-  let equivalence_line = compute_intercept_with_bounding_rect(0, min_x, max_x, min_y, max_y)
-  if (equivalence_line) equivalence_line = scale_line(equivalence_line, x_scale, y_scale)
-
-  const margin = 4
-  let under_report_sensitivity_line = compute_intercept_with_bounding_rect(margin, min_x, max_x, min_y, max_y)
-  if (under_report_sensitivity_line)
+  const diagonal_lines = []
+  let margin = -4
+  while (margin <= 4)
   {
-    under_report_sensitivity_line = scale_line(under_report_sensitivity_line, x_scale, y_scale)
-  }
+    const line = compute_intercept_with_bounding_rect(margin, min_x, max_x, min_y, max_y)
+    if (line)
+    {
+      const scaled_line = scale_line(line, x_scale, y_scale)
+      const class_name = margin === 0 ? "equivalence-line" : "margin-line"
+      diagonal_lines.push({
+        class: class_name,
+        ...scaled_line,
+      })
+    }
 
-  let over_report_sensitivity_line = compute_intercept_with_bounding_rect(-margin, min_x, max_x, min_y, max_y)
-  if (over_report_sensitivity_line)
-  {
-    over_report_sensitivity_line = scale_line(over_report_sensitivity_line, x_scale, y_scale)
+    margin += 2
   }
 
   let hoveredPoint = null
@@ -173,35 +175,15 @@
       ></polygon>
     {/each}
 
-    {#if equivalence_line}
+    {#each diagonal_lines as line}
       <line
-        class="equivalence-line"
-        x1={equivalence_line.x1}
-        y1={equivalence_line.y1}
-        x2={equivalence_line.x2}
-        y2={equivalence_line.y2}
+        class={line.class}
+        x1={line.x1}
+        y1={line.y1}
+        x2={line.x2}
+        y2={line.y2}
       />
-    {/if}
-
-    {#if under_report_sensitivity_line}
-      <line
-        class="equivalence-line"
-        x1={under_report_sensitivity_line.x1}
-        y1={under_report_sensitivity_line.y1}
-        x2={under_report_sensitivity_line.x2}
-        y2={under_report_sensitivity_line.y2}
-      />
-    {/if}
-
-    {#if over_report_sensitivity_line}
-      <line
-        class="equivalence-line"
-        x1={over_report_sensitivity_line.x1}
-        y1={over_report_sensitivity_line.y1}
-        x2={over_report_sensitivity_line.x2}
-        y2={over_report_sensitivity_line.y2}
-      />
-    {/if}
+    {/each}
   </svg>
 
   {#if hoveredPoint}
@@ -309,6 +291,7 @@
   #polygon {
     fill: url(#Gradient2);
     pointer-events: none;
+    display: none;
   }
   .stop1 { stop-color: #fff; stop-opacity: 0; }
   .stop2 { stop-color: #4ef; stop-opacity: 0.6; }
@@ -350,9 +333,16 @@
     stroke-width: 1;
   }
 
-  .equivalence-line {
+  .equivalence-line
+  {
     stroke: #787d92;
     stroke-width: 1;
+  }
+  .margin-line
+  {
+    stroke: #787d92;
+    stroke-width: 1;
+    stroke-dasharray: 20px;
   }
 
   text {
