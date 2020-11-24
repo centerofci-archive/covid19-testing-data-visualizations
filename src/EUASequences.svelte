@@ -31,7 +31,6 @@
       <text x={x_chart} y={y_titles} class="chart_title">All EUAs</text>
 
       <svg x={x_chart} y={y_graphs}>
-        <circle r="{radius}" cx="0" cy="0" fill="white" />
         {#each primer_probe_sequences__specified as { ratio, begin, color }}
           <Segment radius={radius} ratio={ratio} color={color} begin={begin} />
         {/each}
@@ -55,7 +54,6 @@
       <text x={x_chart} y={y_titles_second_line} class="chart_title">Percentage</text>
 
       <svg x={x_chart} y={y_graphs}>
-        <circle r="{radius}" cx="0" cy="0" fill="white" />
         {#each top_10_tests_sequences_specificed as { ratio, begin, color }}
           <Segment radius={radius} ratio={ratio} color={color} begin={begin} />
         {/each}
@@ -76,7 +74,6 @@
       <text x={x_chart} y={y_titles_second_line} class="chart_title">Percentage Weighted By Number Of Labs</text>
 
       <svg x={x_chart} y={y_graphs}>
-        <circle r="{radius}" cx="0" cy="0" fill="white" />
         {#each top_10_tests_sequences_specificed_weighted as { ratio, begin, color }}
           <Segment radius={radius} ratio={ratio} color={color} begin={begin} />
         {/each}

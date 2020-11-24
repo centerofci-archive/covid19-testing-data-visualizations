@@ -9,18 +9,36 @@ export const summarised_data = {
     "have_parsed": 62,
     "not_parsed": 82,
     "explicitly_specified": 4,
-    "not_specified": 41,
-    "reference_available": 17
+    "reference_available": 17,
+    "not_specified": 41
   },
-  "sequence_data_in_top_10_test_EUAs": {
+  "primer_probe_sequences_in_top_10_test_EUAs": {
     "explicitly_specified": 0,
     "not_specified": 8,
     "reference_available": 1
   },
-  "weighted_sequence_data_in_top_10_test_EUAs": {
+  "weighted_primer_probe_sequences_in_top_10_test_EUAs": {
     "explicitly_specified": 0,
     "not_specified": 65,
     "reference_available": 4
+  },
+  "lod_units": {
+    "have_parsed": 143,
+    "not_parsed": 1,
+    "genome_copies_per_vol": 124,
+    "plaque_forming_units_pfu_per_vol": 2,
+    "tcid50_per_vol": 9,
+    "genome_copies_per_reaction": 7,
+    "other": 1
+  },
+  "lod_units_top_10_tests_weighted": {
+    "have_parsed": 9,
+    "not_parsed": 0,
+    "genome_copies_per_vol": 23,
+    "plaque_forming_units_pfu_per_vol": 6,
+    "tcid50_per_vol": 31,
+    "genome_copies_per_reaction": 9,
+    "other": 0
   }
 }
 
@@ -38,10 +56,12 @@ function generate_data_for_display (categories, begin_offset = 0)
     color = color || get_color(viridis, color_ratio)
 
     const ratio = value / total
-    const label_w_percentage = label + `  (${(ratio * 100).toFixed(1)}%)`
+    const percentage = `${(ratio * 100).toFixed(1)}%`
+    const label_w_percentage = label + `  (${percentage})`
 
     const data = {
       label,
+      percentage,
       label_w_percentage,
       ratio,
       begin: running_total + begin_offset,
@@ -89,17 +109,17 @@ export const primer_probe_sequences__specified = generate_data_for_display([
 export const top_10_tests_sequences_specificed = generate_data_for_display([
   {
     label: `Explicitly Specified<tspan baseline-shift="super">*</tspan>`,
-    value: summarised_data.sequence_data_in_top_10_test_EUAs.explicitly_specified,
+    value: summarised_data.primer_probe_sequences_in_top_10_test_EUAs.explicitly_specified,
     color: COLOURS.steel_blue,
   },
   {
     label: `Reference Available<tspan baseline-shift="super">**</tspan>`,
-    value: summarised_data.sequence_data_in_top_10_test_EUAs.reference_available,
+    value: summarised_data.primer_probe_sequences_in_top_10_test_EUAs.reference_available,
     color: COLOURS.light_steel_blue,
   },
   {
     label: "Not Specified",
-    value: summarised_data.sequence_data_in_top_10_test_EUAs.not_specified,
+    value: summarised_data.primer_probe_sequences_in_top_10_test_EUAs.not_specified,
     color: COLOURS.rosy_brown,
   },
 ], 0.24)
@@ -108,17 +128,76 @@ export const top_10_tests_sequences_specificed = generate_data_for_display([
 export const top_10_tests_sequences_specificed_weighted = generate_data_for_display([
   {
     label: `Explicitly Specified<tspan baseline-shift="super">*</tspan>`,
-    value: summarised_data.weighted_sequence_data_in_top_10_test_EUAs.explicitly_specified,
+    value: summarised_data.weighted_primer_probe_sequences_in_top_10_test_EUAs.explicitly_specified,
     color: COLOURS.steel_blue,
   },
   {
     label: `Reference Available<tspan baseline-shift="super">**</tspan>`,
-    value: summarised_data.weighted_sequence_data_in_top_10_test_EUAs.reference_available,
+    value: summarised_data.weighted_primer_probe_sequences_in_top_10_test_EUAs.reference_available,
     color: COLOURS.light_steel_blue,
   },
   {
     label: "Not Specified",
-    value: summarised_data.weighted_sequence_data_in_top_10_test_EUAs.not_specified,
+    value: summarised_data.weighted_primer_probe_sequences_in_top_10_test_EUAs.not_specified,
     color: COLOURS.rosy_brown,
   },
 ], 0.24)
+
+
+export const lod_units = generate_data_for_display([
+  {
+    label: `Genome copies per volume`,
+    value: summarised_data.lod_units.genome_copies_per_vol,
+    color: COLOURS.steel_blue,
+  },
+  {
+    label: `PFU per volume`,
+    value: summarised_data.lod_units.plaque_forming_units_pfu_per_vol,
+    color: COLOURS.light_steel_blue,
+  },
+  {
+    label: "Genome copies per reaction",
+    value: summarised_data.lod_units.genome_copies_per_reaction,
+    color: COLOURS.thistle,
+  },
+  {
+    label: "TCID50 per volume",
+    value: summarised_data.lod_units.tcid50_per_vol,
+    color: COLOURS.rosy_brown,
+  },
+  {
+    label: "Other",
+    value: summarised_data.lod_units.other,
+    color: COLOURS.powder_blue,
+  },
+], 0.25)
+
+
+export const lod_units_top_10_tests_weighted = generate_data_for_display([
+  {
+    label: `Genome copies per volume`,
+    value: summarised_data.lod_units_top_10_tests_weighted.genome_copies_per_vol,
+    color: COLOURS.steel_blue,
+  },
+  {
+    label: `PFU per volume`,
+    value: summarised_data.lod_units_top_10_tests_weighted.plaque_forming_units_pfu_per_vol,
+    color: COLOURS.light_steel_blue,
+  },
+  {
+    label: "Genome copies per reaction",
+    value: summarised_data.lod_units_top_10_tests_weighted.genome_copies_per_reaction,
+    color: COLOURS.thistle,
+  },
+  {
+    label: "TCID50 per volume",
+    value: summarised_data.lod_units_top_10_tests_weighted.tcid50_per_vol,
+    color: COLOURS.rosy_brown,
+  },
+  {
+    label: "Other",
+    value: summarised_data.lod_units_top_10_tests_weighted.other,
+    color: COLOURS.powder_blue,
+  },
+], 0.25)
+

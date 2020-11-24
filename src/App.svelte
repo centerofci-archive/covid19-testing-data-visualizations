@@ -10,7 +10,7 @@
 	import Clusters from "./Clusters.svelte"
 	import TestInfo from "./TestInfo.svelte"
 	import EUASequences from "./EUASequences.svelte"
-	import EUAStructuredData from "./EUAStructuredData.svelte"
+	import EUA_LOD_units from "./EUA_LOD_units.svelte"
 
 	let tests = []
 	let methods = []
@@ -107,6 +107,10 @@
 	<div class="main">
 		{#if sections.includes("eua_sequences")}
 			<EUASequences />
+		{/if}
+
+		{#if sections.includes("eua_lod_units")}
+			<EUA_LOD_units />
 		{/if}
 
 		{#if sections.includes("timeline")}

@@ -1,14 +1,23 @@
 <script>
-    export let begin = 0;
-    export let radius = 10;
-    export let ratio = 1;
-    export let color = "blue";
+  export let begin = 0;
+  export let radius = 10;
+  export let ratio = 1;
+  export let color = "blue";
+  export let mouseenter = () => console.log("woo");
+  export let mouseleave = () => console.log("woo");
 
-    const fudge = 1
+  const fudge = 1
 </script>
 
-<circle r="{radius / 2}" cx="0" cy="0" fill="none"
-    stroke="{color}"
-    stroke-width="{radius}"
-    stroke-dasharray="{(ratio * Math.PI * radius) + fudge} {Math.PI * radius}"
-    transform="rotate({begin * 360})"/>`
+<circle
+  r="{radius / 2}"
+  cx="0"
+  cy="0"
+  fill="none"
+  stroke="{color}"
+  stroke-width="{radius}"
+  stroke-dasharray="{(ratio * Math.PI * radius) + fudge} {Math.PI * radius}"
+  transform="rotate({begin * 360})"
+  on:mouseenter={mouseenter}
+  on:mouseleave={mouseleave}
+/>
