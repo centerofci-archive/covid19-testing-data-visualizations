@@ -9,6 +9,8 @@
 	import TestsTable from "./TestsTable.svelte"
 	import Clusters from "./Clusters.svelte"
 	import TestInfo from "./TestInfo.svelte"
+	import EUASequences from "./EUASequences.svelte"
+	import EUAStructuredData from "./EUAStructuredData.svelte"
 
 	let tests = []
 	let methods = []
@@ -103,6 +105,10 @@
 		</div>
 	{/if}
 	<div class="main">
+		{#if sections.includes("eua_sequences")}
+			<EUASequences />
+		{/if}
+
 		{#if sections.includes("timeline")}
 			<Timeline data={tests} />
 		{/if}
@@ -150,7 +156,7 @@
 	</div>
 
 	{#if caption}
-		<div class="caption">{ caption }</div>
+		<div class="caption">{@html caption }</div>
 	{/if}
 </main>
 
