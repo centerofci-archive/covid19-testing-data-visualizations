@@ -1,10 +1,11 @@
 <script>
+  export let highlighted = false;
   export let begin = 0;
   export let radius = 10;
   export let ratio = 1;
   export let color = "blue";
-  export let mouseenter = () => console.log("woo");
-  export let mouseleave = () => console.log("woo");
+  export let mouseenter = () => {};
+  export let mouseleave = () => {};
 
   const fudge = 1
 </script>
@@ -14,7 +15,7 @@
   cx="0"
   cy="0"
   fill="none"
-  stroke="{color}"
+  stroke="{console.log(highlighted) || highlighted ? color : "black"}"
   stroke-width="{radius}"
   stroke-dasharray="{(ratio * Math.PI * radius) + fudge} {Math.PI * radius}"
   transform="rotate({begin * 360})"

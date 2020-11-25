@@ -5,9 +5,10 @@
     summarised_data,
     lod_viral_material,
   } from "./data_summarised"
+  import Nested from "./Nested.svelte"
 
-  const width = 1000
-  const height = 600
+  const width = 10 // 1000
+  const height = 10 //600
 
   const radius = 180
 
@@ -21,15 +22,26 @@
   const y_legends = -250
   const y_data_source = 220
 
+  const mouse_move = v => () => {
+    selected_index = v
+    console.log(selected_index)
+  }
+
+
+  let selected_index = 1;
+
 </script>
 
 <div>
+  {selected_index}
+  <Nested name={selected_index} mouseenter={mouse_move("chees2")} mouseleave={mouse_move("gone2")}/>
   <svg {width} {height} class="top" overflow="scroll">
     <svg x={x}>
 
       <svg x={x_chart} y={y_graphs}>
-        {#each lod_viral_material as { ratio, begin, color, label, percentage }}
+        {#each lod_viral_material as { ratio, begin, color }, i}
           <Segment
+            highlighted={i === selected_index}
             radius={radius}
             ratio={ratio}
             color={color}
@@ -38,7 +50,14 @@
         {/each}
 
         {#each lod_viral_material as { color, label_w_percentage, refs }, i}
-          <Legend text={label_w_percentage} color={color} x={x_legends} y={y_legends + i * 65} />
+          <Legend
+            text="{label_w_percentage + selected_index}"
+            color={color}
+            x={x_legends}
+            y={y_legends + i * 65}
+            mouseenter={mouse_move(i)}
+            mouseleave={mouse_move(null)}
+          />
           <text
             x={x_legends + 30}
             y={y_legends + 33 + i * 65}
