@@ -31,6 +31,8 @@
     x={x + 10 + size}
     y={y + 5 + size / 2}
     class={highlighted ? "highlighted" : ""}
+    on:mouseenter={mouseenter}
+    on:mouseleave={mouseleave}
   >
     {@html text}
   </text>
