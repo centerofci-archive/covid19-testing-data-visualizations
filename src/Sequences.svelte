@@ -23,6 +23,12 @@
 
   const radius = 140
 
+  let selected_group = null;
+  let selected_index = null;
+  const mouse_move = (group, index) => () => {
+    selected_group = group
+    selected_index = index
+  }
 </script>
 
 <div>
@@ -32,14 +38,29 @@
       <text x={x_chart} y={y_titles} class="chart_title">All EUAs</text>
 
       <svg x={x_chart} y={y_graphs}>
-        {#each primer_probe_sequences__specified as { ratio, begin, color }}
-          <Segment radius={radius} ratio={ratio} color={color} begin={begin} />
+        {#each primer_probe_sequences__specified as { ratio, begin, color }, i}
+          <Segment
+            highlighted={selected_group === "all" && selected_index === i}
+            radius={radius}
+            ratio={ratio}
+            color={color}
+            begin={begin}
+            mouseenter={mouse_move("all", i)}
+            mouseleave={mouse_move(null, null)}
+          />
         {/each}
       </svg>
 
       <svg y={y_legends}>
       {#each primer_probe_sequences__specified as { label_w_percentage, color }, i}
-        <Legend text={label_w_percentage} color={color} y={i * 50} />
+        <Legend
+          highlighted={selected_group === "all" && selected_index === i}
+          text={label_w_percentage}
+          color={color}
+          y={i * 50}
+          mouseenter={mouse_move("all", i)}
+          mouseleave={mouse_move(null, null)}
+        />
       {/each}
 
         <text class="data_source" x={0} y={150}>
@@ -55,14 +76,29 @@
       <text x={x_chart} y={y_titles_second_line} class="chart_title">Percentage</text>
 
       <svg x={x_chart} y={y_graphs}>
-        {#each top_10_tests_sequences_specificed as { ratio, begin, color }}
-          <Segment radius={radius} ratio={ratio} color={color} begin={begin} />
+        {#each top_10_tests_sequences_specificed as { ratio, begin, color }, i}
+          <Segment
+            highlighted={selected_group === "top10" && selected_index === i}
+            radius={radius}
+            ratio={ratio}
+            color={color}
+            begin={begin}
+            mouseenter={mouse_move("top10", i)}
+            mouseleave={mouse_move(null, null)}
+          />
         {/each}
       </svg>
 
       <svg y={y_legends}>
       {#each top_10_tests_sequences_specificed as { label_w_percentage, color }, i}
-        <Legend text={label_w_percentage} color={color} y={i * 50} />
+        <Legend
+          highlighted={selected_group === "top10" && selected_index === i}
+          text={label_w_percentage}
+          color={color}
+          y={i * 50}
+          mouseenter={mouse_move("top10", i)}
+          mouseleave={mouse_move(null, null)}
+        />
       {/each}
       </svg>
     </svg>
@@ -72,14 +108,29 @@
       <text x={x_chart} y={y_titles_second_line} class="chart_title">Percentage Weighted By Number Of Labs</text>
 
       <svg x={x_chart} y={y_graphs}>
-        {#each top_10_tests_sequences_specificed_weighted as { ratio, begin, color }}
-          <Segment radius={radius} ratio={ratio} color={color} begin={begin} />
+        {#each top_10_tests_sequences_specificed_weighted as { ratio, begin, color }, i}
+          <Segment
+            highlighted={selected_group === "weighted_top10" && selected_index === i}
+            radius={radius}
+            ratio={ratio}
+            color={color}
+            begin={begin}
+            mouseenter={mouse_move("weighted_top10", i)}
+            mouseleave={mouse_move(null, null)}
+          />
         {/each}
       </svg>
 
       <svg y={y_legends}>
       {#each top_10_tests_sequences_specificed_weighted as { label_w_percentage, color }, i}
-        <Legend text={label_w_percentage} color={color} y={i * 50} />
+        <Legend
+          highlighted={selected_group === "weighted_top10" && selected_index === i}
+          text={label_w_percentage}
+          color={color}
+          y={i * 50}
+          mouseenter={mouse_move("weighted_top10", i)}
+          mouseleave={mouse_move(null, null)}
+        />
       {/each}
       </svg>
     </svg>
