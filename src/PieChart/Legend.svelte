@@ -8,11 +8,11 @@
   export let mouseenter = () => {};
   export let mouseleave = () => {};
 
-  const extra = () => size * (highlighted ? 0.1 : 0)
-  const x1 = () => x - extra()
-  const y1 = () => y - extra()
-  const x2 = () => x + size + extra()
-  const y2 = () => y + size + extra()
+  const extra = (highlighted) => size * (highlighted ? 0.1 : 0)
+  const x1 = (highlighted) => x - extra(highlighted)
+  const y1 = (highlighted) => y - extra(highlighted)
+  const x2 = (highlighted) => x + size + extra(highlighted)
+  const y2 = (highlighted) => y + size + extra(highlighted)
 </script>
 
 <g
@@ -20,7 +20,7 @@
   on:mouseleave={mouseleave}
 >
   <path
-    d="M{x1()} {y1()} {x2()} {y1()} {x2()} {y2()} {x1()} {y2()} z"
+    d="M{x1(highlighted)} {y1(highlighted)} {x2(highlighted)} {y1(highlighted)} {x2(highlighted)} {y2(highlighted)} {x1(highlighted)} {y2(highlighted)} z"
     stroke="{color}"
     stroke-width="5"
     stroke-linecap="square"
