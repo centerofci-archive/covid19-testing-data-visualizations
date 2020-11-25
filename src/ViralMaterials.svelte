@@ -83,7 +83,7 @@
     font-size: 0.8em;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    pointer-events: none;
+    cursor: default;
   }
   text.data_source {
     font-size: 0.7em;

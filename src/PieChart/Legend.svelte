@@ -31,8 +31,6 @@
     x={x + 10 + size}
     y={y + 5 + size / 2}
     class={highlighted ? "highlighted" : ""}
-    on:mouseenter={mouseenter}
-    on:mouseleave={mouseleave}
   >
     {@html text}
   </text>
@@ -44,7 +42,7 @@
     font-size: 0.8em;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    pointer-events: none;
+    cursor: default;
   }
   text.highlighted
   {
