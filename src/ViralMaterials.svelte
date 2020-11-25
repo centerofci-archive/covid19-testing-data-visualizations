@@ -21,6 +21,8 @@
   const y_legends = -250
   const y_data_source = 220
 
+  let selected_index = null;
+  const mouse_move = v => () => selected_index = v
 </script>
 
 <div>
@@ -28,17 +30,28 @@
     <svg x={x}>
 
       <svg x={x_chart} y={y_graphs}>
-        {#each lod_viral_material as { ratio, begin, color, label, percentage }}
+        {#each lod_viral_material as { ratio, begin, color }, i}
           <Segment
+            highlighted={i === selected_index}
             radius={radius}
             ratio={ratio}
             color={color}
             begin={begin}
+            mouseenter={mouse_move(i)}
+            mouseleave={mouse_move(null)}
           />
         {/each}
 
         {#each lod_viral_material as { color, label_w_percentage, refs }, i}
-          <Legend text={label_w_percentage} color={color} x={x_legends} y={y_legends + i * 65} />
+          <Legend
+            highlighted={i === selected_index}
+            text="{label_w_percentage}"
+            color={color}
+            x={x_legends}
+            y={y_legends + i * 65}
+            mouseenter={mouse_move(i)}
+            mouseleave={mouse_move(null)}
+          />
           <text
             x={x_legends + 30}
             y={y_legends + 33 + i * 65}
