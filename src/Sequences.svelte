@@ -14,6 +14,7 @@
   const x = 140
   const x_chart = 110
   const x_next = 375
+  const x_center_right = x + (x_next * 3 + x_chart * 2) / 2
 
   const y_titles = 20
   const y_titles_second_line = y_titles + 22
@@ -48,7 +49,7 @@
     </svg>
 
 
-    <text x={x + (x_next * 3 + x_chart * 2) / 2} y={y_titles} class="chart_title">EUAs Of Top 10 Tests Used By US Labs<tspan baseline-shift="super">*</tspan></text>
+    <text x={x_center_right} y={y_titles} class="chart_title">EUAs Of Top 10 Tests Used By US Labs<tspan baseline-shift="super">*</tspan></text>
 
     <svg x={x + x_next}>
       <text x={x_chart} y={y_titles_second_line} class="chart_title">Percentage</text>
@@ -63,9 +64,6 @@
       {#each top_10_tests_sequences_specificed as { label_w_percentage, color }, i}
         <Legend text={label_w_percentage} color={color} y={i * 50} />
       {/each}
-        <text class="data_source" x={0} y={150}>
-          {@html `Data from EUAs of top 10 tests used by labs.<tspan baseline-shift="super">*</tspan>`}
-        </text>
       </svg>
     </svg>
 
@@ -85,6 +83,10 @@
       {/each}
       </svg>
     </svg>
+
+    <text class="data_source centered" x={x_center_right} y={y_legends + 150}>
+      {@html `Data from EUAs of top 10 tests used by labs.<tspan baseline-shift="super">*</tspan>`}
+    </text>
 
   </svg>
 </div>
@@ -106,6 +108,9 @@
   }
   text.data_source {
     font-size: 0.7em;
+  }
+  text.data_source.centered {
+    text-anchor: middle;
   }
   text.chart_title {
     text-anchor: middle;

@@ -9,8 +9,9 @@
 	import TestsTable from "./TestsTable.svelte"
 	import Clusters from "./Clusters.svelte"
 	import TestInfo from "./TestInfo.svelte"
-	import EUASequences from "./EUASequences.svelte"
-	import EUA_LOD_units from "./EUA_LOD_units.svelte"
+	import Sequences from "./Sequences.svelte"
+	import LODUnits from "./LODUnits.svelte"
+	import ViralMaterials from "./ViralMaterials.svelte"
 
 	let tests = []
 	let methods = []
@@ -105,12 +106,16 @@
 		</div>
 	{/if}
 	<div class="main">
-		{#if sections.includes("eua_sequences")}
-			<EUASequences />
+		{#if sections.includes("sequences")}
+			<Sequences />
 		{/if}
 
-		{#if sections.includes("eua_lod_units")}
-			<EUA_LOD_units />
+		{#if sections.includes("lod_units")}
+			<LODUnits />
+		{/if}
+
+		{#if sections.includes("viral_materials")}
+			<ViralMaterials />
 		{/if}
 
 		{#if sections.includes("timeline")}
