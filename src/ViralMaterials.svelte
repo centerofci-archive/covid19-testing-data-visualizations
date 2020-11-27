@@ -9,7 +9,7 @@
   const width = 1000
   const height = 600
 
-  const radius = 180
+  const radius = 90
 
   const x = 170
   const x_chart = 180

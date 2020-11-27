@@ -10,7 +10,7 @@
   const width = 1000
   const height = 600
 
-  const radius = 140
+  const radius = 70
 
   const x = 170
   const x_chart = 110

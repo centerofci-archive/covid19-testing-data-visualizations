@@ -11,6 +11,8 @@
   const width = 1000
   const height = 600
 
+  const radius = 70
+
   const x = 140
   const x_chart = 110
   const x_next = 375
@@ -20,8 +22,6 @@
   const y_titles_second_line = y_titles + 22
   const y_graphs = y_titles + 180
   const y_legends = y_graphs + 200
-
-  const radius = 140
 
   let selected_group = null;
   let selected_index = null;
