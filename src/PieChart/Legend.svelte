@@ -1,18 +1,34 @@
 <script>
-  export let highlighted = false;
-  export let x = 0;
-  export let y = 0;
-  export let text = "";
-  export let color = "blue";
-  export let size = 20;
-  export let mouseenter = () => {};
-  export let mouseleave = () => {};
+	import { tweened } from 'svelte/motion'
+	import { cubicOut } from 'svelte/easing'
 
-  const extra = (highlighted) => size * (highlighted ? 0.1 : 0)
-  const x1 = (highlighted) => x - extra(highlighted)
-  const y1 = (highlighted) => y - extra(highlighted)
-  const x2 = (highlighted) => x + size + extra(highlighted)
-  const y2 = (highlighted) => y + size + extra(highlighted)
+  export let highlighted = false
+  export let x = 0
+  export let y = 0
+  export let text = ""
+  export let color = "blue"
+  export let size = 20
+  export let mouseenter = () => {}
+  export let mouseleave = () => {}
+
+  const max_ratio = 0.1
+
+  const highlight_ratio = tweened(0, {
+		duration: 200,
+		easing: cubicOut
+  })
+
+  $: {
+    highlight_ratio.set(highlighted ? max_ratio : 0)
+  }
+
+  $: extra = size * $highlight_ratio
+  $: x1 = x - extra
+  $: y1 = y - extra
+  $: x2 = x + size + extra
+  $: y2 = y + size + extra
+
+  $: font_color = ((max_ratio - $highlight_ratio) / max_ratio) * 120
 </script>
 
 <g
@@ -20,7 +36,7 @@
   on:mouseleave={mouseleave}
 >
   <path
-    d="M{x1(highlighted)} {y1(highlighted)} {x2(highlighted)} {y1(highlighted)} {x2(highlighted)} {y2(highlighted)} {x1(highlighted)} {y2(highlighted)} z"
+    d="M{x1} {y1} {x2} {y1} {x2} {y2} {x1} {y2} z"
     stroke="{color}"
     stroke-width="5"
     stroke-linecap="square"
@@ -30,7 +46,7 @@
   <text
     x={x + 10 + size}
     y={y + 5 + size / 2}
-    class={highlighted ? "highlighted" : ""}
+    fill={`rgb(${font_color}, ${font_color}, ${font_color})`}
   >
     {@html text}
   </text>
@@ -43,9 +59,5 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     cursor: default;
-  }
-  text.highlighted
-  {
-    font-weight: bold;
   }
 </style>
