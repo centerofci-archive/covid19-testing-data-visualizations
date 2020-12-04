@@ -8,8 +8,8 @@
     top_10_tests_sequences_specificed_weighted,
   } from "./data_summarised"
 
-  const width = 1000
-  const height = 600
+  const width = 1100
+  const height = 550
 
   const radius = 70
 
@@ -32,7 +32,7 @@
 </script>
 
 <div>
-  <svg {width} {height} class="top" overflow="scroll">
+  <svg {width} {height} class="svg_container">
 
     <svg x={x}>
       <text x={x_chart} y={y_titles} class="chart_title">All EUAs</text>
@@ -143,8 +143,7 @@
 </div>
 
 <style>
-  svg.top {
-    /* overflow: scroll; */
+  .svg_container {
     margin: 20px 100px;
   }
   svg {

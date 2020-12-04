@@ -107,15 +107,21 @@
 	{/if}
 	<div class="main">
 		{#if sections.includes("sequences")}
-			<Sequences />
+			<scrolled>
+				<Sequences />
+			</scrolled>
 		{/if}
 
 		{#if sections.includes("lod_units")}
-			<LODUnits />
+			<scrolled>
+				<LODUnits />
+			</scrolled>
 		{/if}
 
 		{#if sections.includes("viral_materials")}
-			<ViralMaterials />
+			<scrolled>
+				<ViralMaterials />
+			</scrolled>
 		{/if}
 
 		{#if sections.includes("timeline")}
@@ -199,8 +205,8 @@
 		padding: 1rem 1.6rem;
 		border-bottom: 1px solid;
 		max-width: 1050px;
-    margin: 0 auto;
-    width: 100%;
+		margin: 0 auto;
+		width: 100%;
 	}
 	.title h2 {
 		margin: 0;
@@ -221,8 +227,14 @@
 		background: #f4f4f4;
 		border-top: 1px solid;
 		max-width: 1050px;
-    margin: 0 auto;
-    width: 100%;
+		margin: 0 auto;
+		width: 100%;
+	}
+
+	@media (max-width: 1200px) {
+		scrolled {
+			overflow: scroll;
+		}
 	}
 
 	.test-list {

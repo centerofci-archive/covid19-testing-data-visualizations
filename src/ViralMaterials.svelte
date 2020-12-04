@@ -26,7 +26,7 @@
 </script>
 
 <div>
-  <svg {width} {height} class="top" overflow="scroll">
+  <svg {width} {height} class="svg_container">
     <svg x={x}>
 
       <svg x={x_chart} y={y_graphs}>
@@ -71,8 +71,7 @@
 </div>
 
 <style>
-  svg.top {
-    /* overflow: scroll; */
+  .svg_container {
     margin: 20px 100px;
   }
   svg {
